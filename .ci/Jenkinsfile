@@ -68,7 +68,7 @@ pipeline {
             // }
             when {
                 expression {
-                    { !"${env.BRANCH_NAME}".matches("^PR-[0-9]+\$") }
+                    expression { params.Release }
                 }
             }
             steps {
