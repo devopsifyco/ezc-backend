@@ -1,0 +1,21 @@
+pipeline {
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10', artifactNumToKeepStr: '10', artifactDaysToKeepStr: '10'))
+    }
+
+    agent { docker { image 'node:20.11.0-alpine3.19' } }
+
+    stages {
+        stage('Prepare') {
+            steps {
+                sh 'node --version'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'node --version'
+            }
+        }
+    }
+}
