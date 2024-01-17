@@ -3,18 +3,77 @@ pipeline {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10', artifactNumToKeepStr: '10', artifactDaysToKeepStr: '10'))
     }
+    agent {
+        docker { image 'node:20.11.0-alpine3.19' }
+    }
 
-    agent { docker { image 'node:20.11.0-alpine3.19' } }
+    parameters {
+        booleanParam name: 'Release', defaultValue: false, description: 'Build release version'
+        booleanParam name: 'ScanSonar', defaultValue: false, description: 'Scan Sonarqube for CodeQuality'
+    }
 
     stages {
         stage('Prepare') {
             steps {
                 sh 'node --version'
+
+                print "TODO: Get git repo info"
+                print "TODO: Get app build info"
             }
         }
-        stage('Build') {
+
+        stage('Tag release') {
+            when {
+                expression {
+                    expression { params.Release }
+                }
+            }
             steps {
-                sh 'node --version'
+                print 'TODO: Tag version on Github'
+            }
+        }
+
+        stage('Build Test') {
+            parallel {
+                stage('Build and Test') {
+                    steps {
+                        script {
+                            print 'TODO: Add build command'
+                            print 'TODO: Add test command'
+                            print 'TODO: Add publish command'
+                        }
+                    }
+                }
+                stage('Code Quality') {
+                    when {
+                        expression {
+                            expression { params.ScanSonar }
+                        }
+                    }
+                    steps {
+                        script {
+                            print 'TODO: Add publish command'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            // agent {
+            //     docker {
+            //         image "${buildSetting.dockerBuildContainer}"
+            //         reuseNode true
+            //     }
+            // }
+            when {
+                expression {
+                    { !(env.BRANCH_NAME.matches("^PR-[0-9]+\$") )
+                }
+            }
+            steps {
+                print 'TODO: build Docker Image'
+                print 'TODO: publish Docker Image'
             }
         }
     }
