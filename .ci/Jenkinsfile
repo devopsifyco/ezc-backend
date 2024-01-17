@@ -68,7 +68,8 @@ pipeline {
             // }
             when {
                 expression {
-                    expression { params.Release }
+                    { !"${env.BRANCH_NAME}".matches("^PR-[0-9]+\$") }
+                }
             }
             steps {
                 print 'TODO: build Docker Image'
