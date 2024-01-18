@@ -112,4 +112,15 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            script {
+                common.notifyGoogleChat("This is test message from GreenBee CICD Chatbot")
+            }
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
 }
