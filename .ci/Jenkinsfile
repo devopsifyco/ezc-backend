@@ -113,13 +113,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            // agent {
-            //     docker {
-            //         image "docker:dind"
-            //         reuseNode true
-            //     }
-            // }
+        stage('Push Image to Dockerhub') {
             when {
                 expression {
                     expression { params.Release }
