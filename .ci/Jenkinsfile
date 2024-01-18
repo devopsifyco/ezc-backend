@@ -1,4 +1,5 @@
 @Library('ezc-jenkins-library@init') _
+Map buildSetting
 
 pipeline {
     options {
