@@ -65,12 +65,12 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            // agent {
-            //     docker {
-            //         image "${buildSetting.dockerBuildContainer}"
-            //         reuseNode true
-            //     }
-            // }
+            agent {
+                docker {
+                    image "docker:dind"
+                    reuseNode true
+                }
+            }
             when {
                 expression {
                     expression { params.Release }

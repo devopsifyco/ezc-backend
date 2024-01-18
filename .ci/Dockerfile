@@ -1,5 +1,12 @@
-FROM node:9.3.0
-ADD . /code
-WORKDIR /code
+FROM node:16-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+COPY package*.json ./
 RUN npm install
-CMD ["node", "server.js"]
+# Bundle app source
+COPY . .
+
+EXPOSE 8080
+CMD npm start
