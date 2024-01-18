@@ -106,7 +106,7 @@ pipeline {
     post {
         always {
             script {
-                common.notifyGoogleChat("This is test message from GreenBee CICD Chatbot")
+                common.notifyGoogleChat("This is test message from EZC GreenBee CICD Chatbot")
             }
         }
         cleanup {
