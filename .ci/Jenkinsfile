@@ -1,5 +1,4 @@
 @Library('ezc-jenkins-library@init') _
-Map buildSetting
 
 pipeline {
     options {
@@ -24,8 +23,8 @@ pipeline {
                 }
             }
             steps {
+                common.populateBuildOption(buildSetting)
                 sh 'node --version'
-
                 print "TODO: Get git repo info"
                 print "TODO: Get app build info"
             }
