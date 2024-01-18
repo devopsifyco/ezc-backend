@@ -117,7 +117,7 @@ pipeline {
                 script {
                     withDockerRegistry([credentialsId: "DockerHub", url: '']) {
                         sh 'docker push huyntt/ezc-backend'
-                        sh 'docker rmi huyntt/ezc-backend'
+                        // sh 'docker rmi huyntt/ezc-backend'
                     }
                 }
             }
