@@ -110,7 +110,7 @@ pipeline {
 
                     sh "ls .ci -a"
 
-                    sh "docker build ${dockerOptions} -t huyntt/ezc-backend -f Dockerfile .ci"
+                    sh "docker build ${dockerOptions} -t huyntt/ezc-backend -f .ci/Dockerfile"
                 }
             }
         }
