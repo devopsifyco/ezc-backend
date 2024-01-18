@@ -1,3 +1,5 @@
+@Library('ezc-jenkins-library@init') _
+
 pipeline {
     options {
         disableConcurrentBuilds()
@@ -53,6 +55,7 @@ pipeline {
                     steps {
                         script {
                             print 'TODO: Add publish command'
+                            common.cmd "echo Test lib"
                         }
                     }
                 }
