@@ -102,9 +102,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix ())
-                        cmd('export DOCKER_CREDENTIAL_CONFIG=/usr/local/bin/.docker/config.json')
+                        common.cmd('export DOCKER_CREDENTIAL_CONFIG=/usr/local/bin/.docker/config.json')
                     else
-                        cmd('setx DOCKER_CREDENTIAL_CONFIG %userprofile%/.docker/config.json')
+                        common.cmd('setx DOCKER_CREDENTIAL_CONFIG %userprofile%/.docker/config.json')
                     dockerOptions = "--build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg GIT_URL=${GIT_URL} --build-arg GIT_BRANCH=${GIT_BRANCH}"
                     dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
                     dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
