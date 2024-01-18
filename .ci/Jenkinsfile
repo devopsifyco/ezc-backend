@@ -40,7 +40,8 @@ pipeline {
                 stage('Build and Test') {
                     steps {
                         script {
-                            print 'TODO: Add build command'
+                            // print 'TODO: Add build command'
+                            common.cmd "npm install"
                             print 'TODO: Add test command'
                             print 'TODO: Add publish command'
                         }
