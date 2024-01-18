@@ -47,49 +47,39 @@ pipeline {
             }
         }
 
-        stage('Build Test') {
+        stage('Build and Test') {
             agent {
                 docker {
                     image 'node:20.11.0-alpine3.19'
                     reuseNode true
                 }
             }
-            parallel {
-                stage('Build and Test') {
-                    agent {
-                        docker {
-                            image 'node:20.11.0-alpine3.19'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        script {
-                            // print 'TODO: Add build command'
-                            common.cmd "npm install"
-                            // sh 'npm install'
-                            print 'TODO: Add test command'
-                            print 'TODO: Add publish command'
-                        }
-                    }
+            steps {
+                script {
+                    // print 'TODO: Add build command'
+                    common.cmd "npm install"
+                    // sh 'npm install'
+                    print 'TODO: Add test command'
+                    print 'TODO: Add publish command'
                 }
-                stage('Code Quality') {
-                    agent {
-                        docker {
-                            image 'node:20.11.0-alpine3.19'
-                            reuseNode true
-                        }
-                    }
-                    when {
-                        expression {
-                            expression { params.ScanSonar }
-                        }
-                    }
-                    steps {
-                        script {
-                            print 'TODO: Add publish command'
-                            common.cmd "echo Test lib"
-                        }
-                    }
+            }
+        }
+        stage('Code Quality') {
+            agent {
+                docker {
+                    image 'node:20.11.0-alpine3.19'
+                    reuseNode true
+                }
+            }
+            when {
+                expression {
+                    expression { params.ScanSonar }
+                }
+            }
+            steps {
+                script {
+                    print 'TODO: Add publish command'
+                    common.cmd "echo Test lib"
                 }
             }
         }
