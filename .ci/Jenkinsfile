@@ -41,7 +41,8 @@ pipeline {
                     steps {
                         script {
                             // print 'TODO: Add build command'
-                            common.cmd "npm install"
+                            // common.cmd "npm install"
+                            sh 'npm install'
                             print 'TODO: Add test command'
                             print 'TODO: Add publish command'
                         }
