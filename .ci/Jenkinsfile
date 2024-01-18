@@ -97,8 +97,10 @@ pipeline {
                 }
             }
             steps {
-                print 'TODO: build Docker Image'
-                print 'TODO: publish Docker Image'
+                script {
+                    common.buildImage(buildSetting)
+
+                }
             }
         }
     }
@@ -106,7 +108,8 @@ pipeline {
     post {
         always {
             script {
-                common.notifyGoogleChat("This is test message from EZC GreenBee CICD Chatbot")
+                print 'TODO: Notify GoogleChat build status'
+                // common.notifyGoogleChat("This is test message from EZC GreenBee CICD Chatbot")
             }
         }
         cleanup {
