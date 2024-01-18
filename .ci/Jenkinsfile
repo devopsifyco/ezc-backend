@@ -6,10 +6,7 @@ pipeline {
         buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10', artifactNumToKeepStr: '10', artifactDaysToKeepStr: '10'))
     }
     agent {
-        docker {
-            image 'node:20.11.0-alpine3.19'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+        label "master"
     }
 
     parameters {
@@ -19,6 +16,12 @@ pipeline {
 
     stages {
         stage('Prepare') {
+            agent {
+                docker {
+                    image 'node:20.11.0-alpine3.19'
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'node --version'
 
@@ -28,6 +31,12 @@ pipeline {
         }
 
         stage('Tag release') {
+            agent {
+                docker {
+                    image 'node:20.11.0-alpine3.19'
+                    reuseNode true
+                }
+            }
             when {
                 expression {
                     expression { params.Release }
@@ -39,8 +48,20 @@ pipeline {
         }
 
         stage('Build Test') {
+            agent {
+                docker {
+                    image 'node:20.11.0-alpine3.19'
+                    reuseNode true
+                }
+            }
             parallel {
                 stage('Build and Test') {
+                    agent {
+                        docker {
+                            image 'node:20.11.0-alpine3.19'
+                            reuseNode true
+                        }
+                    }
                     steps {
                         script {
                             // print 'TODO: Add build command'
@@ -52,6 +73,12 @@ pipeline {
                     }
                 }
                 stage('Code Quality') {
+                    agent {
+                        docker {
+                            image 'node:20.11.0-alpine3.19'
+                            reuseNode true
+                        }
+                    }
                     when {
                         expression {
                             expression { params.ScanSonar }
