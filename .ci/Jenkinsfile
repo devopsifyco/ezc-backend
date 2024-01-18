@@ -101,8 +101,14 @@ pipeline {
             }
             steps {
                 script {
-                    common.buildImage(buildSetting)
-
+                    if (isUnix ())
+                        cmd('export DOCKER_CREDENTIAL_CONFIG=/usr/local/bin/.docker/config.json')
+                    else
+                        cmd('setx DOCKER_CREDENTIAL_CONFIG %userprofile%/.docker/config.json')
+                    sh """docker build ${buildSetting.dockerOptions} -t huyntt/ezc-backend -f Dockerfile . \
+                        --build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg GIT_URL=${GIT_URL} --build-arg GIT_BRANCH=${GIT_BRANCH} \
+                        --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}
+                    """
                 }
             }
         }
