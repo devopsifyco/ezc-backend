@@ -108,8 +108,6 @@ pipeline {
                     dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
                     dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
 
-                    sh "ls .ci -a"
-
                     sh "docker build ${dockerOptions} -t huyntt/ezc-backend -f .ci/Dockerfile ."
                 }
             }
