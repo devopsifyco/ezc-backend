@@ -25,6 +25,7 @@ pipeline {
             }
             steps {
                 script {
+                    checkout scm
                     common.populateBuildOption(buildSetting)
                     sh 'node --version'
                 }
