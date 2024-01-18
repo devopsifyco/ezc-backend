@@ -23,8 +23,10 @@ pipeline {
                 }
             }
             steps {
-                common.populateBuildOption(buildSetting)
-                sh 'node --version'
+                script {
+                    common.populateBuildOption(buildSetting)
+                    sh 'node --version'
+                }
                 print "TODO: Get git repo info"
                 print "TODO: Get app build info"
             }
