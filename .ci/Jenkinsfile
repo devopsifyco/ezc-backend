@@ -52,25 +52,34 @@ pipeline {
             }
         }
 
-        stage('build test') {
+        stage('builds') {
             agent {
                 docker {
                     image 'node:20.11.0-alpine3.19'
                     reuseNode true
                 }
             }
-            when {
-                expression {
-                    expression { params.Release }
+            parallel {
+                stage('build test') {
+                    when {
+                        expression {
+                            expression { !params.Release }
+                        }
+                    }
+                    steps {
+                        // TODO
+                        echo 'build demo done'
+                    }
                 }
-            }
-            steps {
-                script {
-                    // print 'TODO: Add build command'
-                    // common.cmd "npm install"
-                    // sh 'npm install'
-                    print 'TODO: Add test command'
-                    print 'TODO: Add publish command'
+                stage('build demo') {
+                    when {
+                        expression {
+                            expression { params.Release }
+                        }
+                    }
+                    steps {
+                        echo 'build demo done'
+                    }
                 }
             }
         }
@@ -118,40 +127,40 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            when {
-                expression {
-                    expression { params.Release }
-                }
-            }
-            steps {
-                script {
-                    sh 'export DOCKER_CREDENTIAL_CONFIG=/usr/local/bin/.docker/config.json'
+        // stage('Build Docker Image') {
+        //     when {
+        //         expression {
+        //             expression { params.Release }
+        //         }
+        //     }
+        //     steps {
+        //         script {
+        //             sh 'export DOCKER_CREDENTIAL_CONFIG=/usr/local/bin/.docker/config.json'
 
-                    dockerOptions = "--build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg GIT_URL=${GIT_URL} --build-arg GIT_BRANCH=${GIT_BRANCH}"
-                    dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
-                    dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
+        //             dockerOptions = "--build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg GIT_URL=${GIT_URL} --build-arg GIT_BRANCH=${GIT_BRANCH}"
+        //             dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
+        //             dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
 
-                    sh "docker build ${dockerOptions} -t huyntt/ezc-backend -f .ci/Dockerfile ."
-                }
-            }
-        }
+        //             sh "docker build ${dockerOptions} -t huyntt/ezc-backend -f .ci/Dockerfile ."
+        //         }
+        //     }
+        // }
 
-        stage('Push Image to Dockerhub') {
-            when {
-                expression {
-                    expression { params.Release }
-                }
-            }
-            steps {
-                script {
-                    withDockerRegistry([credentialsId: "DockerHub", url: '']) {
-                        sh 'docker push huyntt/ezc-backend'
-                        // sh 'docker rmi huyntt/ezc-backend'
-                    }
-                }
-            }
-        }
+        // stage('Push Image to Dockerhub') {
+        //     when {
+        //         expression {
+        //             expression { params.Release }
+        //         }
+        //     }
+        //     steps {
+        //         script {
+        //             withDockerRegistry([credentialsId: "DockerHub", url: '']) {
+        //                 sh 'docker push huyntt/ezc-backend'
+        //                 // sh 'docker rmi huyntt/ezc-backend'
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('deployments') {
             parallel {
