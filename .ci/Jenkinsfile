@@ -13,6 +13,7 @@ pipeline {
     parameters {
         booleanParam name: 'Release', defaultValue: false, description: 'Build release version'
         booleanParam name: 'ScanSonar', defaultValue: false, description: 'Scan Sonarqube for CodeQuality'
+        booleanParam name: 'Deploy', defaultValue: false, description: 'Deploy the version'
     }
 
     stages {
@@ -51,7 +52,7 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:20.11.0-alpine3.19'
@@ -121,6 +122,20 @@ pipeline {
                     }
                 }
             }
+        }
+
+        stage('Deploy - test') {
+            when {
+                branch 'enable-cicd'
+            }
+            steps {
+                echo 'Deploying to test from enable-cicd...'
+            }
+            // post {
+            //     always {
+            //         jiraSendDeploymentInfo environmentId: 'us-stg-1', environmentName: 'us-stg-1', environmentType: 'staging'
+            //     }
+            // }
         }
     }
 
