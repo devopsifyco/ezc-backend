@@ -52,7 +52,7 @@ pipeline {
             }
         }
 
-        stage('build test') {
+        stage('build') {
             agent {
                 docker {
                     image 'node:20.11.0-alpine3.19'
@@ -124,7 +124,7 @@ pipeline {
             }
         }
 
-        stage('Deploy - test') {
+        stage('deploy') {
             steps {
                 echo 'Deploying to test from enable-cicd...'
             }
