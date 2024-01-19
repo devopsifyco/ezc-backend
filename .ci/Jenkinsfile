@@ -52,11 +52,16 @@ pipeline {
             }
         }
 
-        stage('build') {
+        stage('build test') {
             agent {
                 docker {
                     image 'node:20.11.0-alpine3.19'
                     reuseNode true
+                }
+            }
+            when {
+                expression {
+                    expression { params.Release }
                 }
             }
             steps {
@@ -69,6 +74,30 @@ pipeline {
                 }
             }
         }
+
+        stage('build test') {
+            agent {
+                docker {
+                    image 'node:20.11.0-alpine3.19'
+                    reuseNode true
+                }
+            }
+            when {
+                expression {
+                    expression { params.Release }
+                }
+            }
+            steps {
+                script {
+                    // print 'TODO: Add build command'
+                    // common.cmd "npm install"
+                    // sh 'npm install'
+                    print 'TODO: Add test command'
+                    print 'TODO: Add publish command'
+                }
+            }
+        }
+
         stage('Code Quality') {
             agent {
                 docker {
@@ -124,15 +153,29 @@ pipeline {
             }
         }
 
-        stage('deploy') {
-            steps {
-                echo 'Deploying to test from enable-cicd...'
+        stage('deployments') {
+            parallel {
+                stage('deploy to test') {
+                    when {
+                        expression {
+                            expression { !params.Release }
+                        }
+                    }
+                    steps {
+                        echo 'test deployment done'
+                    }
+                }
+                stage('deploy to demo') {
+                    when {
+                        expression {
+                            expression { params.Release }
+                        }
+                    }
+                    steps {
+                        echo 'demo deployment done'
+                    }
+                }
             }
-            // post {
-            //     always {
-            //         jiraSendDeploymentInfo environmentId: 'us-stg-1', environmentName: 'us-stg-1', environmentType: 'staging'
-            //     }
-            // }
         }
     }
 
