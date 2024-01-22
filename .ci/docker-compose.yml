@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  web-api:
+    build: ../
+    ports:
+      - "3000:8080"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb/ezc
+
+  mongodb:
+    image: mongo
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  mongodb: {}
