@@ -1,5 +1,4 @@
 version: "3.9"
-
 services:
   web-api:
     build: ../
@@ -9,14 +8,13 @@ services:
       - mongodb
     depends_on:
       - mongodb
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb/ezc
+    env_file: ./.env
 
   mongodb:
     image: mongo
     volumes:
       - mongodb:/data/db
+    env_file: ./.env
 
 volumes:
   mongodb: {}
