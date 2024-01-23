@@ -44,7 +44,7 @@ pipeline {
             }
             when {
                 expression {
-                    expression { params.Release }
+                    expression { params.Release.toBoolean() }
                 }
             }
             steps {
@@ -63,7 +63,7 @@ pipeline {
                     }
                     when {
                         expression {
-                            expression { params.Release }
+                            expression { params.Release.toBoolean() }
                         }
                     }
                     steps {
@@ -80,7 +80,7 @@ pipeline {
                     }
                     when {
                         expression {
-                            expression { !params.Release }
+                            expression { !params.Release.toBoolean() }
                         }
                     }
                     steps {
@@ -99,7 +99,7 @@ pipeline {
             }
             when {
                 expression {
-                    expression { params.ScanSonar }
+                    expression { params.ScanSonar.toBoolean() }
                 }
             }
             steps {
@@ -113,7 +113,7 @@ pipeline {
         stage('Build Docker Image') {
             when {
                 expression {
-                    expression { params.Release }
+                    expression { params.Release.toBoolean() }
                 }
             }
             steps {
@@ -132,7 +132,7 @@ pipeline {
         stage('Push Image to Dockerhub') {
             when {
                 expression {
-                    expression { params.Release }
+                    expression { params.Release.toBoolean() }
                 }
             }
             steps {
@@ -149,7 +149,7 @@ pipeline {
                 stage('deploy test') {
                     when {
                         expression {
-                            expression { params.Release }
+                            expression { params.Release.toBoolean() }
                         }
                     }
                     steps {
@@ -159,7 +159,7 @@ pipeline {
                 stage('deploy demo') {
                     when {
                         expression {
-                            expression { !params.Release }
+                            expression { !params.Release.toBoolean() }
                         }
                     }
                     steps {
