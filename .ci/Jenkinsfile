@@ -118,8 +118,9 @@ pipeline {
 
         stage('Push Image to Dockerhub') {
             when {
-                expression {
-                    expression { params.Release.toBoolean() & !git.isPR(GIT_BRANCH) }
+                allOf {
+                    expression { params.Release.toBoolean() }
+                    expression { !git.isPR(GIT_BRANCH) }
                 }
             }
             steps {
@@ -135,8 +136,9 @@ pipeline {
             parallel {
                 stage('deploy test') {
                     when {
-                        expression {
+                        allOf {
                             expression { params.Release.toBoolean() }
+                            expression { !git.isPR(GIT_BRANCH) }
                         }
                     }
                     steps {
@@ -147,8 +149,9 @@ pipeline {
                 }
                 stage('deploy demo') {
                     when {
-                        expression {
-                            expression { !params.Release.toBoolean() }
+                        allOf {
+                            expression { params.Release.toBoolean() }
+                            expression { !git.isPR(GIT_BRANCH) }
                         }
                     }
                     steps {
