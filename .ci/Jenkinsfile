@@ -30,17 +30,17 @@ pipeline {
                     checkout scm
                     common.populateBuildOption(buildSetting)
                     sh 'node --version'
-                }
 
-                print "${GIT_BRANCH}"
-                if ("${GIT_BRANCH}"=="master") {
-                    tagName = ":latest"
-                } else ("${GIT_BRANCH}"=="develop") {
-                    tagName = ":develop"
-                }
-                print "TODO: Get git repo info"
-                print "TODO: Get app build info"
+                    print "${GIT_BRANCH}"
 
+                    if ("${GIT_BRANCH}"=="master") {
+                        tagName = ":latest"
+                    } else ("${GIT_BRANCH}"=="develop") {
+                        tagName = ":develop"
+                    }
+                    print "TODO: Get git repo info"
+                    print "TODO: Get app build info"
+                }
             }
         }
 
