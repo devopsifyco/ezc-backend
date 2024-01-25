@@ -3,7 +3,7 @@ services:
   web-api:
     build: ../
     ports:
-      - "3000:8080"
+      - "8080:8080"
     links:
       - mongodb
     depends_on:
