@@ -1,5 +1,6 @@
 @Library('ezc-jenkins-library@init') _
 Map buildSetting
+String tagName
 
 pipeline {
     options {
@@ -30,8 +31,16 @@ pipeline {
                     common.populateBuildOption(buildSetting)
                     sh 'node --version'
                 }
+
+                print "${GIT_BRANCH}"
+                if ("${GIT_BRANCH}"=="master") {
+                    tagName = ":latest"
+                } else ("${GIT_BRANCH}"=="develop") {
+                    tagName = ":develop"
+                }
                 print "TODO: Get git repo info"
                 print "TODO: Get app build info"
+
             }
         }
 
@@ -104,7 +113,7 @@ pipeline {
                     dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
                     dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
                     sh "ls -a"
-                    sh "docker build ${dockerOptions} -t opsifydev/ezc-backend:${GIT_BRANCH} -f Dockerfile ."
+                    sh "docker build ${dockerOptions} -t opsifydev/ezc-backend${tagName} -f Dockerfile ."
                 }
             }
         }
@@ -118,7 +127,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: "GreenBee_DockerHub", url: '']) {
-                        sh "docker push opsifydev/ezc-backend:${GIT_BRANCH}"
+                        sh "docker push opsifydev/ezc-backend${tagName}"
                     }
                 }
             }
