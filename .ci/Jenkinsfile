@@ -75,7 +75,6 @@ pipeline {
             }
             steps {
                 sh 'npm install'
-                sh 'npm install'
             }
         }
 
@@ -142,7 +141,7 @@ pipeline {
                     }
                     steps {
                         withCredentials([string(credentialsId: 'GreenBee_Test-DeployHook', variable: 'WEBHOOK')]) { //set SECRET with the credential content
-                            sh "curl -v"
+                            sh "curl -d \"TAG=${tagName}\" -X POST ${WEBHOOK}"
                             echo "My secret text is '${WEBHOOK}'"
                         }
                     }
