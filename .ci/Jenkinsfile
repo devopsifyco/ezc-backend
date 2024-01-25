@@ -104,7 +104,7 @@ pipeline {
                     dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
                     dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
                     sh "ls -a"
-                    sh "docker build ${dockerOptions} -t opsifydev/ezc-backend -f Dockerfile ."
+                    sh "docker build ${dockerOptions} -t opsifydev/ezc-backend:${GIT_BRANCH} -f Dockerfile ."
                 }
             }
         }
@@ -118,7 +118,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: "GreenBee_DockerHub", url: '']) {
-                        sh 'docker push opsifydev/ezc-backend'
+                        sh "docker push opsifydev/ezc-backend:${GIT_BRANCH}"
                     }
                 }
             }
