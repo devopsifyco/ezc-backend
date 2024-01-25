@@ -4,6 +4,7 @@ const cors = require('cors');
 const connect = require('./config/db/db')
 const app = express();
 dotenv.configDotenv();
+const route = require('./routes/index')
 connect();
 
 
@@ -12,7 +13,9 @@ app.use(cors({
     credentials: true,
 }));
 
+
 app.use(express.json());
+route(app);
 
 
 app.listen(process.env.PORT, () => {
