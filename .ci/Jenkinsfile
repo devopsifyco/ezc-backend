@@ -142,7 +142,10 @@ pipeline {
                         }
                     }
                     steps {
-                        echo 'test deployment done'
+                        withCredentials([string(credentialsId: 'GreenBee_Test-DeployHook', variable: 'WEBHOOK')]) { //set SECRET with the credential content
+                            sh "curl -v"
+                            echo "My secret text is '${WEBHOOK}'"
+                        }
                     }
                 }
                 stage('deploy demo') {
