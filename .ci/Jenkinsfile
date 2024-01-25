@@ -119,7 +119,7 @@ pipeline {
         stage('Push Image to Dockerhub') {
             when {
                 expression {
-                    expression { params.Release.toBoolean() }
+                    expression { params.Release.toBoolean() & !git.isPR(GIT_BRANCH) }
                 }
             }
             steps {
