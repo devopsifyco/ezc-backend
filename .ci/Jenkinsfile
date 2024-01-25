@@ -52,41 +52,20 @@ pipeline {
             }
         }
 
-        stage('builds') {
-            parallel {
-                stage('build test') {
-                    agent {
-                        docker {
-                            image 'node:20.11.0-alpine3.19'
-                            reuseNode true
-                        }
-                    }
-                    when {
-                        expression {
-                            expression { params.Release.toBoolean() }
-                        }
-                    }
-                    steps {
-                        // TODO
-                        echo 'build demo done'
-                    }
+        stage('build develop') {
+            agent {
+                docker {
+                    image 'node:21-alpine'
+                    reuseNode true
                 }
-                stage('build demo') {
-                    agent {
-                        docker {
-                            image 'node:20.11.0-alpine3.19'
-                            reuseNode true
-                        }
-                    }
-                    when {
-                        expression {
-                            expression { !params.Release.toBoolean() }
-                        }
-                    }
-                    steps {
-                        echo 'build demo done'
-                    }
+            }
+            when {
+                expression {
+                    expression { params.Release.toBoolean() }
                 }
+            }
+            steps {
+                sh 'npm install'
             }
         }
 
