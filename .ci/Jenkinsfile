@@ -35,7 +35,7 @@ pipeline {
 
                     if ("${GIT_BRANCH}"=="master") {
                         tagName = ":latest"
-                    } else ("${GIT_BRANCH}"=="develop") {
+                    } else if ("${GIT_BRANCH}"=="develop") {
                         tagName = ":develop"
                     }
                     print "TODO: Get git repo info"
