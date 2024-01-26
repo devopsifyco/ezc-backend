@@ -74,7 +74,9 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm ci'
+                configFileProvider([configFile(fileId: "defaultNPMSettings", variable: 'NPM_CONFIG_USERCONFIG')]) {
+                    sh 'npm ci'
+                }
             }
         }
 
