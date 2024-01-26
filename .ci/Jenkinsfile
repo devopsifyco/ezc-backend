@@ -39,6 +39,7 @@ pipeline {
                     } else if ("${GIT_BRANCH}"=="develop") {
                         tagName = "develop"
                     }
+                    imageName = "ezc-backend:${tagName}"
                     print "TODO: Get git repo info"
                     print "TODO: Get app build info"
                 }
@@ -119,7 +120,7 @@ pipeline {
                     dockerOptions = "--build-arg GIT_COMMIT=${GIT_COMMIT} --build-arg GIT_URL=${GIT_URL} --build-arg GIT_BRANCH=${GIT_BRANCH}"
                     dockerOptions = dockerOptions + " --build-arg BUILD_NUMBER=${BUILD_NUMBER} --build-arg BUILD_URL=${BUILD_URL}"
                     dockerOptions = dockerOptions + " --build-arg APP_NAME=ezc-backend"
-                    sh "docker build ${dockerOptions} -t opsifydev/ezc-backend:${tagName} -f Dockerfile ."
+                    sh "docker build ${dockerOptions} -t opsifydev/${imageName} -f Dockerfile ."
                 }
             }
         }
@@ -138,7 +139,8 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: "GreenBee_DockerHub", url: '']) {
-                        sh "docker push opsifydev/ezc-backend:${tagName}"
+                        sh "docker push opsifydev/${imageName}"
+                        sh "docker rmi opsifydev/${imageName}"
                     }
                 }
             }
