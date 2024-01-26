@@ -27,6 +27,7 @@ pipeline {
             }
             steps {
                 script {
+                    cleanWs()
                     checkout scm
                     common.populateBuildOption(buildSetting)
                     sh 'node --version'
@@ -74,7 +75,9 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm ci'
+                configFileProvider([configFile(fileId: "defaultNPMSettings", variable: 'NPM_CONFIG_USERCONFIG')]) {
+                    sh 'npm install'
+                }
             }
         }
 
