@@ -105,7 +105,8 @@ pipeline {
                         expression { params.Release.toBoolean() }
                         expression { !git.isPR(GIT_BRANCH) }
                     }
-                    expression { GIT_BRANCH == "develop-auto-deploy" }
+                    branch 'develop'
+                    branch 'master'
                 }
             }
             steps {
@@ -127,7 +128,8 @@ pipeline {
                         expression { params.Release.toBoolean() }
                         expression { !git.isPR(GIT_BRANCH) }
                     }
-                    expression { GIT_BRANCH == "develop-auto-deploy" }
+                    branch 'develop'
+                    branch 'master'
                 }
             }
             steps {
@@ -148,7 +150,7 @@ pipeline {
                                 expression { params.Release.toBoolean() }
                                 expression { !git.isPR(GIT_BRANCH) }
                             }
-                            expression { GIT_BRANCH == "develop-auto-deploy" }
+                            branch 'develop'
                         }
                     }
                     steps {
@@ -164,7 +166,7 @@ pipeline {
                                 expression { params.Release.toBoolean() }
                                 expression { !git.isPR(GIT_BRANCH) }
                             }
-                            expression { GIT_BRANCH == "master" }
+                            branch 'master'
                         }
                     }
                     steps {
