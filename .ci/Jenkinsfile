@@ -100,8 +100,12 @@ pipeline {
 
         stage('Build Docker Image') {
             when {
-                expression {
-                    expression { params.Release.toBoolean() }
+                anyOf {
+                    allOf {
+                        expression { params.Release.toBoolean() }
+                        expression { !git.isPR(GIT_BRANCH) }
+                    }
+                    expression { GIT_BRANCH == "develop-auto-deploy" }
                 }
             }
             steps {
@@ -118,9 +122,12 @@ pipeline {
 
         stage('Push Image to Dockerhub') {
             when {
-                allOf {
-                    expression { params.Release.toBoolean() }
-                    expression { !git.isPR(GIT_BRANCH) }
+                anyOf {
+                    allOf {
+                        expression { params.Release.toBoolean() }
+                        expression { !git.isPR(GIT_BRANCH) }
+                    }
+                    expression { GIT_BRANCH == "develop-auto-deploy" }
                 }
             }
             steps {
@@ -136,9 +143,12 @@ pipeline {
             parallel {
                 stage('deploy test') {
                     when {
-                        allOf {
-                            expression { params.Release.toBoolean() }
-                            expression { !git.isPR(GIT_BRANCH) }
+                        anyOf {
+                            allOf {
+                                expression { params.Release.toBoolean() }
+                                expression { !git.isPR(GIT_BRANCH) }
+                            }
+                            expression { GIT_BRANCH == "develop-auto-deploy" }
                         }
                     }
                     steps {
@@ -149,9 +159,12 @@ pipeline {
                 }
                 stage('deploy demo') {
                     when {
-                        allOf {
-                            expression { params.Release.toBoolean() }
-                            expression { !git.isPR(GIT_BRANCH) }
+                        anyOf {
+                            allOf {
+                                expression { params.Release.toBoolean() }
+                                expression { !git.isPR(GIT_BRANCH) }
+                            }
+                            expression { GIT_BRANCH == "master" }
                         }
                     }
                     steps {
