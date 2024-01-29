@@ -4,6 +4,7 @@ const cors = require('cors');
 const connect = require('./config/db/db')
 const app = express();
 dotenv.configDotenv();
+var bodyParser = require('body-parser');
 const route = require('./routes/index')
 connect();
 
@@ -20,6 +21,11 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 app.use(express.json());
 route(app);
 
+app.use(bodyParser.urlencoded({
+    extended: false
+ }));
+ 
+ app.use(bodyParser.json());
 
 // app.listen(process.env.PORT, () => {
 //     console.log(`Listening at ${process.env.PORT}`);
