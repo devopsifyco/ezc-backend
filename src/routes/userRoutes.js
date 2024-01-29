@@ -7,8 +7,8 @@ const {
 const router = express.Router();
 
 
-router.get("/", getAllUser)
-router.post('/sign-up', registerUser);
+router.get("/users", getAllUser)
+    .post('/sign-up', registerUser);
 
 
 

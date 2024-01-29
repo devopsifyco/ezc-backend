@@ -17,7 +17,16 @@ const registerUser = async (req, res) => {
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        if (error.name === 'MongoServerError' && error.code === 11000) {
+            const duplicateKey = Object.keys(error.keyPattern)[0];
+            const duplicateValue = error.keyValue[duplicateKey];
+            
+            res.status(400).json({
+                message: `Duplicate key error: The ${duplicateKey} '${duplicateValue}' is already registered.`,
+            });
+        } else {
+            res.status(500).json({ message: 'Internal server error' });
+        }
     }
 };
 
