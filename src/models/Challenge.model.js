@@ -1,10 +1,27 @@
 const mongoose = require('mongoose');
 
 const challengeSchema = new mongoose.Schema({
-    status_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Status' },
-    title: String,
-    description: String,
-    points_reward: Number,
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    images_path: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    points_reward: {
+        type: Number,
+        required: true,
+    },
 });
 
 const ChallengeModel = mongoose.model('Challenge', challengeSchema);
