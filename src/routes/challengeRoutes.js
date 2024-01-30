@@ -12,7 +12,7 @@ router
     .get(getAllChallenge)
 
 router
-    .route('/challenge/:type')
+    .route('/challenge/:status')
     .get(getChallengeByStatus)
 
 module.exports = router

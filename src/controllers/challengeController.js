@@ -18,10 +18,11 @@ const getAllChallenge = async (req, res) => {
 
 const getChallengeByStatus = async (req, res) => {
     try {
-        const type = req.body.type;
-        const challenges = await ChallengeModel.filter( chal => chal.status = type);
+        const status = req.params.status; 
+        const challenges = await ChallengeModel.find({ status: status});
         res.status(200).json(challenges);
-        console.log(type);
+        console.log(status);
+        console.log(req.body);
     }
     catch (err) {
         console.log(err);
