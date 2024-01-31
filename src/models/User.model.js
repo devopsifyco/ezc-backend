@@ -30,17 +30,21 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin', 'sub-admin', 'challenge-owner'],
         default: 'user',
     },
-    verifycation_code: {
+    verification_code: {
         type: String,
         required: false,
     },
-    verifycation_code_expire: {
+    verification_code_expire: {
         type: Date,
         required: false,
     },
     refresh_token: {
         type: String,
         required: false,
+    },
+    verified: {
+        type: Boolean,
+        default: false,
     },
 });
 
