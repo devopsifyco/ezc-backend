@@ -1,5 +1,8 @@
 @baseUrl = http://localhost:4000/api
 
+
+# ---------------- User onboarding API -------------------
+
 ### get all users
 GET {{baseUrl}}/users
 
@@ -8,7 +11,24 @@ POST {{baseUrl}}/sign-up
 Content-Type: application/json
 
 {
-    "username": "TH12",
+    "username": "TH122",
     "email": "thaihoang12312311@gmail.com",
-    "password": "123123",
+    "password": "123123"
 }
+
+
+# ---------------- Challenge API -------------------
+
+### get all challenges
+GET {{baseUrl}}/challenges
+
+### get all challenges by approved status
+GET {{baseUrl}}/challenge/approved
+
+
+### get all challenges by pending status
+GET {{baseUrl}}/challenge/pending
+
+
+### get all challenges by rejected status
+GET {{baseUrl}}/challenge/rejected
