@@ -30,6 +30,18 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin', 'sub-admin', 'challenge-owner'],
         default: 'user',
     },
+    verifycation_code: {
+        type: String,
+        required: false,
+    },
+    verifycation_code_expire: {
+        type: Date,
+        required: false,
+    },
+    refresh_token: {
+        type: String,
+        required: false,
+    },
 });
 
 const UserModel = mongoose.model('User', userSchema);

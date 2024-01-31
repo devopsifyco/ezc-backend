@@ -11,8 +11,8 @@ POST {{baseUrl}}/sign-up
 Content-Type: application/json
 
 {
-    "username": "TH122",
-    "email": "thaihoang12312311@gmail.com",
+    "username": "TT123",
+    "email": "thait123@gmail.com",
     "password": "123123"
 }
 
@@ -32,3 +32,14 @@ GET {{baseUrl}}/challenge/pending
 
 ### get all challenges by rejected status
 GET {{baseUrl}}/challenge/rejected
+
+
+# ---------------- Send verification code -------------------
+
+### send mail
+POST {{baseUrl}}/send-verification-code
+Content-Type: application/json
+
+{
+    "email": "thaihoang20112k3@gmail.com"
+}
