@@ -7,9 +7,10 @@ const UserModel = require('../models/User.model.js');
 const registerUser = async (req, res) => {
     try {
         const { username, password, email, role } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10); 
         const newUser = new UserModel({
             username,
-            password,
+            password: hashedPassword,
             email,
             role,
         });
