@@ -1,4 +1,5 @@
 const express = require('express');
+const { checkAuthentication } = require('../middlewares/authMiddleware');
 
 const {
     getAllChallenge,
@@ -7,9 +8,11 @@ const {
 
 const router = express.Router();
 
+// router.get('/challenges', checkAuthentication, getAllChallenge);
+
 router
     .route('/challenges')
-    .get(getAllChallenge)
+    .get(checkAuthentication, getAllChallenge)
 
 router
     .route('/challenge/:status')

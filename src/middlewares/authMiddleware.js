@@ -1,27 +1,44 @@
-const jwt = require('jsonwebtoken');
-const asyncHandler = require('express-async-handler');
-const UserModel = require('../models/User.model');
+const UserModel = require("../models/User.model");
+const { verifyAccessToken } = require("../helpers/jwt");
 
-const protect = asyncHandler(async (req, res, next) => {
-  let token;
-
-  token = req.cookies.jwt;
-
-  if (token) {
+const checkAuthentication = async (req, res, next) => {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const authHeader = req.headers.authorization;
 
-      req.user = await UserModel.findById(decoded.userId).select('-password');
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401);
-      throw new Error('Not authorized, token failed');
+        if (!authHeader) {
+            return res.status(401).send("Authorization header not found");
+        }
+
+        const token = authHeader.split(" ")[1]; // Get the token part after 'Bearer'
+
+        if (!token) {
+            return res.status(401).send("Token not found");
+        }
+
+        const decoded = verifyAccessToken(token);
+
+        if (!decoded) {
+            return res.status(401).send("Invalid token");
+        }
+
+        if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+            return res.status(401).send("Token has expired");
+        }
+
+        const user = await UserModel.findOne(decoded.userId);
+
+        if (!user) {
+            return res.status(401).send("User not found");
+        }
+
+        req.userData = user;
+        next();
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal Server Error");
     }
-  } else {
-    res.status(401);
-    throw new Error('Not authorized, no token');
-  }
-});
+};
 
-module.exports = protect
+module.exports = {
+    checkAuthentication
+};
