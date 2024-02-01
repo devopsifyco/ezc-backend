@@ -26,10 +26,23 @@ Content-Type: application/json
 }
 
 
+### verify verification code
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "thaihoang20112k3@gmail.com",
+    "password": "123123"
+}
+
+
 # ---------------- Challenge API -------------------
 
 ### get all challenges
 GET {{baseUrl}}/challenges
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA2NzYzOTY0LCJleHAiOjE3MDY3NjM5OTR9.TJzGWjqBBupz58tFSDt_cui48X-tGtbKcMj-rn_0Lm8
+
 
 ### get all challenges by approved status
 GET {{baseUrl}}/challenge/approved

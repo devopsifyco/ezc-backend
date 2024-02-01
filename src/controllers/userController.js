@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/User.model.js');
+const helpers = require('../helpers/jwt.js');
+const jwt = require('jsonwebtoken')
+
 
 // @desc    Register a new user
 // @route   POST /api/sign-up
@@ -7,7 +10,7 @@ const UserModel = require('../models/User.model.js');
 const registerUser = async (req, res) => {
     try {
         const { username, password, email, role } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10); 
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new UserModel({
             username,
             password: hashedPassword,
@@ -31,6 +34,120 @@ const registerUser = async (req, res) => {
         }
     }
 };
+
+
+// @desc    Login as a user
+// @route   POST /api/login
+// @access  Public
+const loginUser = async (req, res) => {
+    try {
+        const { password, email } = req.body;
+
+        const user = await UserModel.findOne({
+            email: email
+        });
+        if (user == null) {
+            return res.status(404).json({
+                message: "Account is not registered"
+            });
+        }
+        if (user.is_active != "active") {
+            return res.status(400).json({
+                message: "The account has been deleted. Please contact email: it.trungdang@gmail.com. We will handle it for you."
+            });
+        }
+        if (!user) {
+            return res.status(404).json({
+                message: "Username is incorrect"
+            });
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password);
+
+        if (!validPassword) {
+            return res.status(404).json({
+                message: "Password is incorrect"
+            });
+        }
+
+        if (user && validPassword) {
+            const accessToken = helpers.generateAccessToken(user);
+            const refreshToken = helpers.generateRefreshToken(user);
+
+            const updatedUser = await UserModel.findOneAndUpdate({
+                email: email
+            }, {
+                refresh_token: refreshToken
+            }, {
+                new: true
+            });
+
+            await res.cookie("refreshtoken", refreshToken, {
+                httpOnly: true,
+                secure: false,
+                path: '/'
+            });
+            await res.cookie("accesstoken", accessToken, {
+                secure: false,
+                path: '/'
+            });
+
+            const {
+                password,
+                refresh_token,
+                ...others
+            } = user._doc;
+            return res.status(200).json({
+                ...others
+            });
+        }
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+};
+
+
+
+const requestRefreshToken = async (req, res) => {
+    const refreshToken = req.cookies.refreshtoken;
+    console.log(refreshToken);
+    if (!refreshToken) return res.status(401).json("You are not authenticated")
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
+        if (err) console.log(err);
+        const userDb = await User.findById(user.userId);
+        if (!userDb) {
+            return res.status(401).json("User not found");
+        }
+        const newAccessToken = helpers.generateAccessToken(userDb)
+        const newRefreshToken = helpers.generateRefreshToken(userDb);
+
+        const updateRefreshToken = await User.findOneAndUpdate({
+            _id: user.userId
+        }, {
+            $set: {
+                refresh_token: newRefreshToken
+            }
+        }, {
+            new: true
+        });
+        res.cookie("refreshtoken", newRefreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict"
+        });
+        res.cookie('accesstoken', newAccessToken, {
+            secure: false,
+            path: "/",
+            sameSite: "strict"
+        })
+
+        res.status(200).json({
+            accessToken: newAccessToken
+        });
+    })
+}
 
 
 
@@ -89,4 +206,4 @@ const verifyVerificationCodeMatching = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching };
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken};

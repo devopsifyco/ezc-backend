@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    is_active: {
+        type: String,
+        enum: ['active', 'block'],
+        default: 'active',
+    },
 });
 
 const UserModel = mongoose.model('User', userSchema);
