@@ -4,7 +4,8 @@ const { checkAuthentication } = require('../middlewares/authMiddleware');
 const {
     getAllChallenge,
     getChallengeByStatus,
-    createChallenge
+    createChallenge,
+    updateChallenge
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -20,6 +21,10 @@ router
 router
     .route('/challenge/create')
     .post(checkAuthentication, createChallenge)
+
+router
+    .route('/challenge/update')
+    .post(checkAuthentication, updateChallenge)
 
 
 module.exports = router
