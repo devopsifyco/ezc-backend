@@ -56,6 +56,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
     "points_reward": 5
 }
 
+### update challenge
+POST {{baseUrl}}/challenge/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA2OTMxMzExLCJleHAiOjE3MDcwMzkzMTF9.d6ZNzQVAwYSBPS6hoetE75TjnDPkSUM6S00gQVfnLVo
+
+{
+    "id": "65bdad62e331cf8e35af720d",
+    "title": "Lam sach bien My Khe 2",
+    "images_path": "firebase.cloud.com",
+    "description": "Lam sach bien tu 2km -> 16km",
+    "points_reward": 3
+}
+
 ### get all challenges by approved status
 GET {{baseUrl}}/challenge/approved
 

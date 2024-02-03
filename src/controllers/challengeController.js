@@ -49,4 +49,31 @@ const createChallenge = async (req, res) => {
     }
 }
 
-module.exports = { getAllChallenge, getChallengeByStatus, createChallenge};
+
+const updateChallenge = async (req, res) => {
+    try {
+        const { id, title, images_path, description, points_reward } = req.body;
+
+
+        await ChallengeModel.findOneAndUpdate(
+            { _id: id },
+            {
+                title: title,
+                images_path: images_path,
+                description: description,
+                points_reward: points_reward
+            },
+            {
+                new: true
+            }
+        );
+
+        return res.status(201).json("Update challenge successfully");
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+module.exports = { getAllChallenge, getChallengeByStatus, createChallenge, updateChallenge };
