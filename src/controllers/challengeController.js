@@ -1,8 +1,6 @@
 const ChallengeModel = require('../models/Challenge.model')
 
-// @desc    Get all users
-// @route   POST /api/users
-// @access  Public
+
 const getAllChallenge = async (req, res) => {
     try {
         const challenges = await ChallengeModel.find();
@@ -18,8 +16,8 @@ const getAllChallenge = async (req, res) => {
 
 const getChallengeByStatus = async (req, res) => {
     try {
-        const status = req.params.status; 
-        const challenges = await ChallengeModel.find({ status: status});
+        const status = req.params.status;
+        const challenges = await ChallengeModel.find({ status: status });
         res.status(200).json(challenges);
         console.log(status);
         console.log(req.body);
@@ -30,4 +28,25 @@ const getChallengeByStatus = async (req, res) => {
     }
 }
 
-module.exports = { getAllChallenge, getChallengeByStatus };
+
+const createChallenge = async (req, res) => {
+    try {
+        const { title, images_path, description, points_reward } = req.body;
+
+        const newChallenge = new ChallengeModel ({
+            title: title,
+            images_path: images_path,
+            description: description,
+            points_reward: points_reward
+        });
+
+        await newChallenge.save();
+        return res.status(201).json("Create new challenge successfully");
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+module.exports = { getAllChallenge, getChallengeByStatus, createChallenge};

@@ -21,6 +21,7 @@ const challengeSchema = new mongoose.Schema({
     points_reward: {
         type: Number,
         required: true,
+        default: 0,
     },
 });
 
