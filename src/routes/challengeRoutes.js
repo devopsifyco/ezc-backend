@@ -3,12 +3,11 @@ const { checkAuthentication } = require('../middlewares/authMiddleware');
 
 const {
     getAllChallenge,
-    getChallengeByStatus
+    getChallengeByStatus,
+    createChallenge
 } = require('../controllers/challengeController');
 
 const router = express.Router();
-
-// router.get('/challenges', checkAuthentication, getAllChallenge);
 
 router
     .route('/challenges')
@@ -16,6 +15,11 @@ router
 
 router
     .route('/challenge/:status')
-    .get(getChallengeByStatus)
+    .get(checkAuthentication, getChallengeByStatus)
+
+router
+    .route('/challenge/create')
+    .post(checkAuthentication, createChallenge)
+
 
 module.exports = router

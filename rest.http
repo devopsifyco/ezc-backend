@@ -44,6 +44,18 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA2NzYzOTY0LCJleHAiOjE3MDY3NjM5OTR9.TJzGWjqBBupz58tFSDt_cui48X-tGtbKcMj-rn_0Lm8
 
 
+### create new challenge
+POST {{baseUrl}}/challenge/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA2OTI5NDc4LCJleHAiOjE3MDY5Mjk1MDh9.sffoDwFtrfGZWSPzIG46RKrLriwOxuv80VDXbBnzIgo
+
+{
+    "title": "Lam sach bien My Khe",
+    "images_path": "firebase.cloud",
+    "description": "Lam sach bien tu 2km -> 14km",
+    "points_reward": 5
+}
+
 ### get all challenges by approved status
 GET {{baseUrl}}/challenge/approved
 
