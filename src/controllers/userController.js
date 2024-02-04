@@ -109,20 +109,20 @@ const loginUser = async (req, res) => {
 
 
 const requestRefreshToken = async (req, res) => {
-    const refreshToken = req.cookies.refreshtoken;
+    const {refreshToken, email} = req.body;
     console.log(refreshToken);
     if (!refreshToken) return res.status(401).json("You are not authenticated")
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
         if (err) console.log(err);
-        const userDb = await User.findById(user.userId);
+        const userDb = await UserModel.find({email: email});
         if (!userDb) {
             return res.status(401).json("User not found");
         }
         const newAccessToken = helpers.generateAccessToken(userDb)
         const newRefreshToken = helpers.generateRefreshToken(userDb);
 
-        const updateRefreshToken = await User.findOneAndUpdate({
+        const updateRefreshToken = await UserModel.findOneAndUpdate({
             _id: user.userId
         }, {
             $set: {

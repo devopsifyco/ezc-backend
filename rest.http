@@ -36,6 +36,15 @@ Content-Type: application/json
 }
 
 
+### refresh access token
+POST {{baseUrl}}/refresh-token
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MDU1OTI5LCJleHAiOjE3MDk2NDc5Mjl9.o8n_4JTyiVtMGOrQcFMaxBCC6WwD0HlJrA-w6qCytOs"
+}
+
+
 # ---------------- Challenge API -------------------
 
 ### get all challenges
