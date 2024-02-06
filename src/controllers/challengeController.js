@@ -18,9 +18,7 @@ const getChallengeByStatus = async (req, res) => {
     try {
         const status = req.params.status;
         const challenges = await ChallengeModel.find({ status: status });
-        res.status(200).json(challenges);
-        console.log(status);
-        console.log(req.body);
+        return res.status(200).json(challenges);
     }
     catch (err) {
         console.log(err);
@@ -33,7 +31,7 @@ const createChallenge = async (req, res) => {
     try {
         const { title, images_path, description, points_reward } = req.body;
 
-        const newChallenge = new ChallengeModel ({
+        const newChallenge = new ChallengeModel({
             title: title,
             images_path: images_path,
             description: description,
@@ -76,4 +74,36 @@ const updateChallenge = async (req, res) => {
     }
 }
 
-module.exports = { getAllChallenge, getChallengeByStatus, createChallenge, updateChallenge };
+
+const approveChallenge = async (req, res) => {
+    try {
+        const { id } = req.body;
+
+        const challenge = await ChallengeModel.findById({ _id: id })
+
+        if (!challenge) {
+            return res.status(404).json('Cannot find this challenge');
+        }
+
+        if (challenge.status === 'approved') {
+            return res.status(404).json('This challenge was approved');
+        } else if (challenge.status === 'rejected') {
+            return res.status(404).json('This challenge was rejected');
+        } else {
+            await ChallengeModel.findOneAndUpdate(
+                { _id: id },
+                {
+                    status: "approved"
+                }
+            );
+        }
+
+        return res.status(201).json("Approve the challenge successfully");
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+module.exports = { getAllChallenge, getChallengeByStatus, createChallenge, updateChallenge, approveChallenge };
