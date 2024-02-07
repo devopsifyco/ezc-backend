@@ -87,13 +87,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
     "id": "65b90924b0df7134dc92a01e"
 }
 
-### approve challenge
-POST {{baseUrl}}/challenge/approve
+### reject challenge
+POST {{baseUrl}}/challenge/reject
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MzAyMzQwLCJleHAiOjE3MDczMDIzNzB9.0AOrvPkYCT9OwUFV214vjCtBc3698k8L6l-GHkNW-pg
 
 {
-    "id": "65b90924b0df7134dc92a01e"
+    "id": "65bdad62e331cf8e35af720d"
 }
 
 
