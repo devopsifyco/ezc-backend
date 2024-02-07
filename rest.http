@@ -87,6 +87,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
     "id": "65b90924b0df7134dc92a01e"
 }
 
+### approve challenge
+POST {{baseUrl}}/challenge/approve
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
+
+{
+    "id": "65b90924b0df7134dc92a01e"
+}
+
 
 ### get all challenges by approved status
 GET {{baseUrl}}/challenge/approved
