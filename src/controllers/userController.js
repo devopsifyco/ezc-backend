@@ -98,7 +98,7 @@ const loginUser = async (req, res) => {
                 ...others
             } = user._doc;
             return res.status(200).json({
-                ...others
+                message: "Login successfully"
             });
         }
     } catch (error) {
@@ -109,13 +109,13 @@ const loginUser = async (req, res) => {
 
 
 const requestRefreshToken = async (req, res) => {
-    const {refreshToken, email} = req.body;
+    const { refreshToken, email } = req.body;
     console.log(refreshToken);
     if (!refreshToken) return res.status(401).json("You are not authenticated")
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
         if (err) console.log(err);
-        const userDb = await UserModel.find({email: email});
+        const userDb = await UserModel.find({ email: email });
         if (!userDb) {
             return res.status(401).json("User not found");
         }
@@ -206,4 +206,4 @@ const verifyVerificationCodeMatching = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken};
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken };
