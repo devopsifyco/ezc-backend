@@ -87,9 +87,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
     "id": "65b90924b0df7134dc92a01e"
 }
 
+### reject challenge
+POST {{baseUrl}}/challenge/reject
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MzAyMzQwLCJleHAiOjE3MDczMDIzNzB9.0AOrvPkYCT9OwUFV214vjCtBc3698k8L6l-GHkNW-pg
+
+{
+    "id": "65bdad62e331cf8e35af720d"
+}
+
 
 ### get all challenges by approved status
 GET {{baseUrl}}/challenge/approved
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
 
@@ -98,10 +109,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 GET {{baseUrl}}/challenge/pending
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
 
 
 ### get all challenges by rejected status
 GET {{baseUrl}}/challenge/rejected
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
 
