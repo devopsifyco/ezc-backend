@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:4000/api
-
+# @baseUrl = https://ezc-test-api.greenbee.gke.vn/api
 
 # ---------------- User onboarding API -------------------
 
@@ -91,6 +91,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 POST {{baseUrl}}/challenge/reject
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MzAyMzQwLCJleHAiOjE3MDczMDIzNzB9.0AOrvPkYCT9OwUFV214vjCtBc3698k8L6l-GHkNW-pg
+
+{
+    "id": "65bdad62e331cf8e35af720d"
+}
+
+### delete challenge
+DELETE {{baseUrl}}/challenge/delete
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA4MzEwODQxLCJleHAiOjE3MDgzMTI2NDF9.2cKQ3HhlGAYXMF9psKhlot7__Tl2OtpvuwvyaY9Q8UM
 
 {
     "id": "65bdad62e331cf8e35af720d"

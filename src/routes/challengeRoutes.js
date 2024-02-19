@@ -7,7 +7,8 @@ const {
     createChallenge,
     updateChallenge,
     approveChallenge,
-    rejectChallenge
+    rejectChallenge,
+    deleteChallenge
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -35,6 +36,10 @@ router
 router
     .route('/challenge/reject')
     .post(checkAuthentication, rejectChallenge)
+
+router
+    .route('/challenge/delete')
+    .delete(checkAuthentication, deleteChallenge)
 
 
 module.exports = router
