@@ -139,4 +139,25 @@ const rejectChallenge = async (req, res) => {
 }
 
 
-module.exports = { getAllChallenge, getChallengeByStatus, createChallenge, updateChallenge, approveChallenge, rejectChallenge };
+const deleteChallenge = async (req, res) => {
+    try {
+        const { id } = req.body;
+
+        const challenge = await ChallengeModel.findById({ _id: id })
+
+        if (!challenge) {
+            return res.status(404).json('Cannot find this challenge');
+        }
+
+        await ChallengeModel.deleteOne({ _id: id });
+
+        return res.status(201).json("Delete the challenge successfully");
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
+module.exports = { getAllChallenge, getChallengeByStatus, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge };
