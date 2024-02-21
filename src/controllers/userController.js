@@ -99,7 +99,7 @@ const loginUser = async (req, res) => {
             } = user._doc;
             return res.status(200).json({
                 message: "Login successfully",
-                refreshtoken: refreshToken,
+                refreshToken: refreshToken,
                 accessToken: accessToken
             });
         }
