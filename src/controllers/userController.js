@@ -98,7 +98,9 @@ const loginUser = async (req, res) => {
                 ...others
             } = user._doc;
             return res.status(200).json({
-                message: "Login successfully"
+                message: "Login successfully",
+                refreshtoken: refreshToken,
+                accessToken: accessToken
             });
         }
     } catch (error) {
