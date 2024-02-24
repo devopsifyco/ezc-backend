@@ -1,4 +1,4 @@
-name: EZC-Backend CI
+name: EZC-Backend
 
 on: [push]
 
