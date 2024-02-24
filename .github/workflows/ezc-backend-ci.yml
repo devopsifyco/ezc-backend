@@ -13,8 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      docker-tag: ${{ steps.meta.outputs.tags }}
     steps:
     - uses: actions/checkout@v4
     - name: Build NodeJS
@@ -61,9 +59,18 @@ jobs:
     environment: test
     runs-on: ubuntu-latest
     steps:
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            opsifydev/ezc-backend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
       - name: Webhook
         uses: zzzze/webhook-trigger@master
-        env:
-          TAG: ${{needs.build.output.docker-tag}}
         with:
-          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=$TAG"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ steps.meta.outputs.tags }}"
