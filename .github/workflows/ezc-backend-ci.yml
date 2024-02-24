@@ -3,12 +3,12 @@ name: EZC-Backend
 on:
   push:
     branches:
-      - 'ezc-backend-ci'
+      - 'develop'
     tags:
       - 'v*'
   pull_request:
     branches:
-      - 'ezc-backend-ci'
+      - 'develop'
 
 jobs:
   build:
@@ -59,9 +59,10 @@ jobs:
   deploy-test:
     needs: build
     environment: test
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
-          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ env.BRANCH }}"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=develop"
