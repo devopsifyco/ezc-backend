@@ -51,8 +51,5 @@ jobs:
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
-          # data: "{\"event_type\":\"build\"}"
           webhook_url: "${{ secrets.GREENBEE_DEPLOYHOOK_TEST_URL }}?TAG=${{ env.BRANCH }}"
-          # webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${GITHUB_REF##*/}"
-          # options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.TOKEN }}\""
     needs: build
