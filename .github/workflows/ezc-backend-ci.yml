@@ -47,11 +47,8 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    -
-      name: Get branch
-      run: echo "BRANCH=${ steps.meta.outputs.tags }" >> $GITHUB_ENV
-    -
-      name: Build and Push
+
+    - name: Build and Push
       uses: docker/build-push-action@v5
       with:
         context: .
@@ -66,4 +63,4 @@ jobs:
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
-          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ env.BRANCH }}"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ needs.build.steps.meta.outputs.tags }}"
