@@ -4,20 +4,8 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-
-    - name: Import Secrets
-      uses: hashicorp/vault-action@v2
-      with:
-        url: https://vault.opsify.dev
-        token: ${{ secrets.VAULT_TOKEN }}
-        secrets: |
-          credentials/data/jenkins GreenBee_DockerHub_Username | DOCKERHUB_USERNAME ;
-          credentials/data/jenkins GreenBee_DockerHub_Password | DOCKERHUB_TOKEN ;
-
     - uses: actions/checkout@v4
     - name: Build NodeJS
       uses: actions/setup-node@v4
@@ -31,15 +19,14 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-
       - name: Import Secrets
         uses: hashicorp/vault-action@v2
         with:
           url: https://vault.opsify.dev
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
-            credentials/data/jenkins GreenBee_DockerHub_Username | DOCKERHUB_USERNAME ;
-            credentials/data/jenkins GreenBee_DockerHub_Password | DOCKERHUB_TOKEN ;
+            greenbee/data/cicd DockerHub_Username | DOCKERHUB_USERNAME ;
+            greenbee/data/cicd DockerHub_Password | DOCKERHUB_TOKEN ;
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -60,13 +47,20 @@ jobs:
           tags: opsifydev/ezc-backend:develop
     needs: build
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     -
-  #       name: Webhook
-  #       uses: zzzze/webhook-trigger@master
-  #       with:
-  #         data: "{\"event_type\":\"build\"}"
-  #         webhook_url: ${{ secrets.WEBHOOK_URL }}
-  #         options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.TOKEN }}\""
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: https://vault.opsify.dev
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            greenbee/data/cicd DeployHook-TestURL | DEPLOYHOOK_TEST_URL ;
+
+      - name: Webhook
+        uses: zzzze/webhook-trigger@master
+        with:
+          # data: "{\"event_type\":\"build\"}"
+          webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${GITHUB_REF##*/}"
+          # options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.TOKEN }}\""
