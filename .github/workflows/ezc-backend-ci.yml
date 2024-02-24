@@ -1,0 +1,68 @@
+name: EZC-Backend
+
+on:
+  push:
+    branches:
+      - 'develop'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'develop'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build NodeJS
+      uses: actions/setup-node@v4
+      with:
+        node-version: '21.x'
+        cache: 'npm'
+    - run: npm ci
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: |
+          opsifydev/ezc-backend
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+
+    - name: Login to Docker Hub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    -
+      name: Build and Push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+    - name: Get branch
+      run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+  deploy-test:
+    needs: build
+    environment: test
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Webhook
+        uses: zzzze/webhook-trigger@master
+        with:
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=develop"
