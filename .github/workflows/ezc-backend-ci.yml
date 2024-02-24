@@ -48,3 +48,4 @@ jobs:
         with:
           push: true
           tags: opsifydev/ezc-backend:develop
+    needs: build
