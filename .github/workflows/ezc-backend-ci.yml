@@ -43,7 +43,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
           push: true
           tags: opsifydev/ezc-backend:develop
     needs: build
