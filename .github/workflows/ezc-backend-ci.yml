@@ -65,3 +65,4 @@ jobs:
           webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=develop"
           # webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${GITHUB_REF##*/}"
           # options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.TOKEN }}\""
+    needs: docker
