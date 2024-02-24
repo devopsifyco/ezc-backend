@@ -47,9 +47,9 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    # -
-    #   name: Get branch
-    #   run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+    -
+      name: Get branch
+      run: echo "BRANCH=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
     -
       name: Build and Push
       uses: docker/build-push-action@v5
@@ -57,7 +57,6 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
-        # tags: opsifydev/ezc-backend:${{ env.BRANCH }}
 
   deploy-test:
     needs: build
