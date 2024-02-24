@@ -10,22 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Import Secrets
-      uses: hashicorp/vault-action@v3
-      with:
-        url: https://vault.opsify.dev
-        token: ${{ secrets.VAULT_TOKEN }}
-        secrets: |
-          greenbee/data/cicd DockerHub_Username | DOCKERHUB_USERNAME ;
-          greenbee/data/cicd DockerHub_Password | DOCKERHUB_TOKEN ;
 
     - uses: actions/checkout@v4
     - name: Build NodeJS
       uses: actions/setup-node@v4
       with:
         node-version: '21.x'
-        # cache: 'npm'
-    - run: npm install
+        cache: 'npm'
+    - run: npm ci
     # - run: npm run build --if-present
     # - run: npm run test --if-present
     -
@@ -38,8 +30,8 @@ jobs:
       name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ env.DOCKERHUB_USERNAME }}
-        password: ${{ env.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.GREENBEE_DOCKERHUB_USERNAME }}
+        password: ${{ secrets.GREENBEE_DOCKERHUB_TOKEN }}
     -
       name: Get Gitbranch
       run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
@@ -55,19 +47,12 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Import Secrets
-        uses: hashicorp/vault-action@v3
-        with:
-          url: https://vault.opsify.dev
-          token: ${{ secrets.VAULT_TOKEN }}
-          secrets: |
-            greenbee/data/cicd DeployHook-TestURL | DEPLOYHOOK_TEST_URL ;
 
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
           # data: "{\"event_type\":\"build\"}"
-          webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${{ env.BRANCH }}"
+          webhook_url: "${{ secrets.GREENBEE_DEPLOYHOOK_TEST_URL }}?TAG=${{ env.BRANCH }}"
           # webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${GITHUB_REF##*/}"
           # options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.TOKEN }}\""
     needs: build
