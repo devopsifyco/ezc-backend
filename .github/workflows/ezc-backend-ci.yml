@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: greenbee
     steps:
     - uses: actions/checkout@v4
     - name: Build NodeJS
@@ -17,7 +17,7 @@ jobs:
     # - run: npm run test --if-present
 
   docker:
-    runs-on: ubuntu-latest
+    runs-on: greenbee
     steps:
       - name: Import Secrets
         uses: hashicorp/vault-action@v3
@@ -48,7 +48,7 @@ jobs:
     needs: build
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: greenbee
     steps:
       - name: Import Secrets
         uses: hashicorp/vault-action@v3
