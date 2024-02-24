@@ -23,6 +23,7 @@ jobs:
 
       - name: Import Secrets
         uses: hashicorp/vault-action@v2
+        id: secrets
         with:
           url: https://vault.opsify.dev
           token: ${{ secrets.VAULT_TOKEN }}
