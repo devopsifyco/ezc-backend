@@ -37,12 +37,15 @@ jobs:
         username: ${{ env.DOCKERHUB_USERNAME }}
         password: ${{ env.DOCKERHUB_TOKEN }}
     -
+      name: Get Gitbranch
+      run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+    -
       name: Build and Push
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
-        tags: opsifydev/ezc-backend:${{ env.GITHUB_REF_NAME }}
+        tags: opsifydev/ezc-backend:${{ env.BRANCH }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -59,7 +62,7 @@ jobs:
         uses: zzzze/webhook-trigger@master
         with:
           # data: "{\"event_type\":\"build\"}"
-          webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${{ env.GITHUB_REF_NAME }}"
+          webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${{ env.BRANCH }}"
           # webhook_url: "${{ env.DEPLOYHOOK_TEST_URL }}?TAG=${GITHUB_REF##*/}"
           # options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.TOKEN }}\""
     needs: build
