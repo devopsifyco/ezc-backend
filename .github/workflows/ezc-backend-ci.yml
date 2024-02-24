@@ -1,6 +1,10 @@
 name: EZC-Backend
 
-on: [push]
+on:
+  push:
+    branches: [ "develop", "ezc-backend-ci"]
+  pull_request:
+    branches: [ "develop", "ezc-backend-ci"]
 
 jobs:
   build:
@@ -48,6 +52,7 @@ jobs:
         tags: opsifydev/ezc-backend:${{ env.BRANCH }}
 
   deploy:
+
     runs-on: ubuntu-latest
     steps:
       - name: Import Secrets
