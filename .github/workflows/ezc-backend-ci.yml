@@ -43,13 +43,12 @@ jobs:
         push: true
         tags: opsifydev/ezc-backend:${{ env.BRANCH }}
 
-  deploy:
-
+  deploy-test:
+    environment: test
     runs-on: ubuntu-latest
     steps:
-
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
-          webhook_url: "${{ secrets.test.DEPLOYHOOK_URL }}?TAG=${{ env.BRANCH }}"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ env.BRANCH }}"
     needs: build
