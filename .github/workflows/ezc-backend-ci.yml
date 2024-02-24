@@ -53,24 +53,15 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
+    - name: Get branch
+      run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
   deploy-test:
     needs: build
     environment: test
     runs-on: ubuntu-latest
     steps:
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            opsifydev/ezc-backend
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
-          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ steps.meta.outputs.tags }}"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ env.BRANCH }}"
