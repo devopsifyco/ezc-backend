@@ -63,5 +63,7 @@ jobs:
     steps:
       - name: Webhook
         uses: zzzze/webhook-trigger@master
+        env:
+          TAG: ${{needs.build.output.docker-tag}}
         with:
-          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ needs.build.output.docker-tag }}"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=$TAG"
