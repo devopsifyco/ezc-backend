@@ -22,7 +22,7 @@ jobs:
         url: https://vault.opsify.dev
         token: ${{ secrets.VAULT_TOKEN }}
         secrets: |
-          credentials/jenkins GreenBee_DockerHub_Username | DockerHub_Username ;
-          credentials/jenkins GreenBee_DockerHub_Password | DockerHub_Password ;
+          secrets/credentials/jenkins GreenBee_DockerHub_Username | DockerHub_Username ;
+          secrets/credentials/jenkins GreenBee_DockerHub_Password | DockerHub_Password ;
 
     # - run: npm test
