@@ -13,8 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      docker-tag: ${{ steps.meta.outputs.tags }}
     steps:
-
     - uses: actions/checkout@v4
     - name: Build NodeJS
       uses: actions/setup-node@v4
@@ -47,8 +48,8 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-    - name: Build and Push
+    -
+      name: Build and Push
       uses: docker/build-push-action@v5
       with:
         context: .
@@ -63,4 +64,4 @@ jobs:
       - name: Webhook
         uses: zzzze/webhook-trigger@master
         with:
-          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ needs.build.steps.meta.outputs.tags }}"
+          webhook_url: "${{ secrets.DEPLOYHOOK_URL }}?TAG=${{ needs.build.output.docker-tag }}"
