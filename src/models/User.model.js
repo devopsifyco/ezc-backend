@@ -51,6 +51,13 @@ const userSchema = new mongoose.Schema({
         enum: ['active', 'block'],
         default: 'active',
     },
+    challenges: {
+        type: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Challenge'
+        }],
+        default: []
+    }
 });
 
 const UserModel = mongoose.model('User', userSchema);

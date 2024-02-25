@@ -11,7 +11,7 @@ const challengeSchema = new mongoose.Schema({
         required: true,
     },
     images_path: {
-        type: String,
+        type: [String],
         required: true,
     },
     description: {
