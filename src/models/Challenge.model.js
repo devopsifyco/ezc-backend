@@ -11,7 +11,12 @@ const challengeSchema = new mongoose.Schema({
         required: true,
     },
     images_path: {
-        type: [String],
+        type: [
+            {
+                path: { type: String, required: true },
+                downloadLink: { type: String, required: true }
+            }
+        ],
         required: true,
     },
     description: {
