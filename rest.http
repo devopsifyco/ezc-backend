@@ -32,7 +32,7 @@ Content-Type: application/json
 
 {
     "email": "thaihoang20112k3@gmail.com",
-    "password": "123123"
+    "password": "11111111"
 }
 
 
@@ -60,7 +60,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 
 {
     "title": "Lam sach bien My Khe",
-    "images_path": "firebase.cloud",
     "description": "Lam sach bien tu 2km -> 14km",
     "points_reward": 5
 }
@@ -110,25 +109,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 GET {{baseUrl}}/challenge/approved
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
-
 
 ### get all challenges by pending status
 GET {{baseUrl}}/challenge/pending
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
-
 
 ### get all challenges by rejected status
 GET {{baseUrl}}/challenge/rejected
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
-
 
 # ---------------- Send verification code -------------------
 
