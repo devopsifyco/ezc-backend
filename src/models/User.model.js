@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const dotenv = require('dotenv');
+dotenv.configDotenv();
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -50,6 +53,24 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'block'],
         default: 'active',
+    },
+    challenges: {
+        type: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Challenge'
+        }],
+        default: []
+    },
+    avatar: {
+        type: {
+            name: { type: String, required: true },
+            downloadLink: { type: String, required: true }
+        },
+        default: {
+            name: process.env.AVATAR_DEFAULT,
+            downloadLink: process.env.AVATAR_DEFAULT
+        },
+        require: true
     },
 });
 
