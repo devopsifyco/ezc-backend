@@ -6,14 +6,23 @@
 ### get all users
 GET {{baseUrl}}/users
 
+### get user by email
+POST {{baseUrl}}/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA4OTMwMjU0LCJleHAiOjE3MDg5NDEwNTR9.AHcAgiZLA2U9G350nZ36uI90U7NjaF0lIT_JNXCN-gk
+
+{
+    "email": "thaihoang20112k3@gmail.com"
+}
+
 ### sign up
 POST {{baseUrl}}/sign-up
 Content-Type: application/json
 
 {
-    "username": "TT123",
-    "email": "thait123@gmail.com",
-    "password": "123123"
+    "username": "Thne",
+    "email": "thaihoang20112k3@gmail.com",
+    "password": "11111111"
 }
 
 ### verify verification code
@@ -22,7 +31,7 @@ Content-Type: application/json
 
 {
     "email": "thaihoang20112k3@gmail.com",
-    "code": "1211"
+    "code": "8333"
 }
 
 
@@ -42,6 +51,17 @@ Content-Type: application/json
 
 {
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MDU1OTI5LCJleHAiOjE3MDk2NDc5Mjl9.o8n_4JTyiVtMGOrQcFMaxBCC6WwD0HlJrA-w6qCytOs"
+}
+
+
+# ---------------- Send verification code -------------------
+
+### send mail
+POST {{baseUrl}}/send-verification-code
+Content-Type: application/json
+
+{
+    "email": "thaihoang20112k3@gmail.com"
 }
 
 
@@ -120,12 +140,3 @@ GET {{baseUrl}}/challenge/rejected
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
 
-# ---------------- Send verification code -------------------
-
-### send mail
-POST {{baseUrl}}/send-verification-code
-Content-Type: application/json
-
-{
-    "email": "thaihoang20112k3@gmail.com"
-}

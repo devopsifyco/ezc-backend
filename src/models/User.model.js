@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const dotenv = require('dotenv');
+dotenv.configDotenv();
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -58,7 +60,18 @@ const userSchema = new mongoose.Schema({
             ref: 'Challenge'
         }],
         default: []
-    }
+    },
+    avatar: {
+        type: {
+            name: { type: String, required: true },
+            downloadLink: { type: String, required: true }
+        },
+        default: {
+            name: process.env.AVATAR_DEFAULT,
+            downloadLink: process.env.AVATAR_DEFAULT
+        },
+        require: true
+    },
 });
 
 const UserModel = mongoose.model('User', userSchema);
