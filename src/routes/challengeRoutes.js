@@ -1,6 +1,6 @@
 const express = require('express');
 const { checkAuthentication } = require('../middlewares/authMiddleware');
-
+const multer = require('multer');
 const {
     getAllChallenge,
     getChallengeByStatus,
@@ -12,6 +12,8 @@ const {
 } = require('../controllers/challengeController');
 
 const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage })
 
 router
     .route('/challenges')
@@ -21,9 +23,11 @@ router
     .route('/challenge/:status')
     .get(checkAuthentication, getChallengeByStatus)
 
-router
-    .route('/challenge/create')
-    .post(checkAuthentication, createChallenge)
+router.post('/challenge/create', upload.fields([
+    {
+        name: 'image'
+    },
+]), checkAuthentication, createChallenge);
 
 router
     .route('/challenge/update')
