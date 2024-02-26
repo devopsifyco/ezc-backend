@@ -169,6 +169,26 @@ const getAllUser = async (req, res) => {
 }
 
 
+// @desc    Get all users
+// @route   POST /api/users
+// @access  Public
+const getUserByEmail = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            console.log("User not found");
+            return res.status(404).send("User not found")
+        }
+        res.status(200).json(user);
+        console.log(user);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
 
 // @desc    Get all users
 // @route   POST /api/users
@@ -208,4 +228,4 @@ const verifyVerificationCodeMatching = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken };
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail };
