@@ -29,9 +29,11 @@ router.post('/challenge/create', upload.fields([
     },
 ]), checkAuthentication, createChallenge);
 
-router
-    .route('/challenge/update')
-    .post(checkAuthentication, updateChallenge)
+router.post('/challenge/update', upload.fields([
+    {
+        name: 'image'
+    },
+]), checkAuthentication, updateChallenge);
 
 router
     .route('/challenge/approve')
