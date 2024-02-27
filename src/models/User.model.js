@@ -72,6 +72,13 @@ const userSchema = new mongoose.Schema({
         },
         require: true
     },
+    about_me: {
+        type: String
+    },
+    location: {
+        type: String
+    },
+
 });
 
 const UserModel = mongoose.model('User', userSchema);

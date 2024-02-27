@@ -4,7 +4,8 @@
   "description": "Final graduation project",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon ./src/app.js"
+    "start:dev": "nodemon ./server.js",
+    "start": "node ./src/app.js"
   },
   "author": "thaihoang",
   "license": "ISC",

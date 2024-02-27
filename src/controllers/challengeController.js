@@ -3,6 +3,7 @@ const ChallengeModel = require('../models/Challenge.model')
 const firebaseConfig = require('../config/firebase/firebase');
 const firebaseApp = require('firebase/app');
 const firebaseStorage = require('firebase/storage');
+const mongoose = require('mongoose');
 
 firebaseApp.initializeApp(firebaseConfig.firebaseConfig)
 const storage = firebaseStorage.getStorage();
@@ -35,7 +36,7 @@ const getChallengeByStatus = async (req, res) => {
 
 const createChallenge = async (req, res) => {
     try {
-        const { title, description, points_reward } = req.body;
+        const { title, description, points_reward, address, company, start_time, end_time } = req.body;
         const imageFiles = req.files['image'];
 
         if (!imageFiles || !Array.isArray(imageFiles)) {
@@ -75,7 +76,11 @@ const createChallenge = async (req, res) => {
             title: title,
             images_path: imagesData,
             description: description,
-            points_reward: points_reward
+            points_reward: points_reward,
+            address: address,
+            company: company,
+            start_time: start_time,
+            end_time: end_time,
         });
 
         await newChallenge.save();
@@ -90,23 +95,34 @@ const createChallenge = async (req, res) => {
 
 const updateChallenge = async (req, res) => {
     try {
-        const { id, title, images_path, description, points_reward } = req.body;
+        const { id, title, images_path, description, points_reward, address, company, start_time, end_time } = req.body;
+        console.log(req.body);
 
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json("Invalid challenge ID");
+        }
 
-        await ChallengeModel.findOneAndUpdate(
+        const updatedData = {
+            title,
+            images_path,
+            description,
+            points_reward,
+            address,
+            company,
+            start_time,
+            end_time,
+        };
+
+        const updatedChallenge = await ChallengeModel.findOneAndUpdate(
             { _id: id },
-            {
-                title: title,
-                images_path: images_path,
-                description: description,
-                points_reward: points_reward,
-            },
-            {
-                new: true
-            }
+            updatedData,
+            { new: true }
         );
 
-        return res.status(201).json("Update challenge successfully");
+        if (!updatedChallenge) {
+            return res.status(404).json("Challenge not found");
+        }
+        return res.status(200).json("Challenge updated successfully");
     }
     catch (err) {
         console.log(err);
