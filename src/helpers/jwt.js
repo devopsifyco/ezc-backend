@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { TokenExpiredError } = jwt;
+const dotenv = require('dotenv');
+dotenv.configDotenv();
 
 const generateAccessToken = (user) => {
     return token = jwt.sign({
