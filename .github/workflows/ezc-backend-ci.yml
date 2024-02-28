@@ -22,6 +22,12 @@ jobs:
         cache: 'npm'
     - run: npm ci
 
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
 
