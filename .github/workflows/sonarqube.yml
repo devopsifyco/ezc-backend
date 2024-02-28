@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - develop
+      - sonarqube
   pull_request:
       types: [opened, synchronize, reopened]
 
