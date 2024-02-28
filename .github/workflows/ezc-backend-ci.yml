@@ -3,12 +3,12 @@ name: EZC-Backend
 on:
   push:
     branches:
-      - 'develop'
+      - '*'
     tags:
       - 'v*'
   pull_request:
     branches:
-      - 'develop'
+      - '*'
 
 jobs:
   build:
