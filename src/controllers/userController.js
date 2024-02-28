@@ -42,37 +42,51 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { password, email } = req.body;
+        console.log("aksdfh1");
 
         const user = await UserModel.findOne({
             email: email
         });
+        console.log("aksdfh2");
+
         if (user == null) {
             return res.status(404).json({
                 message: "Account is not registered"
             });
         }
+        console.log("aksdfh3");
+
         if (user.is_active != "active") {
             return res.status(400).json({
                 message: "The account has been deleted. Please contact email: it.trungdang@gmail.com. We will handle it for you."
             });
         }
+        console.log("aksdfh4");
+
         if (!user) {
             return res.status(404).json({
                 message: "Username is incorrect"
             });
         }
+        console.log("aksdfh5");
 
         const validPassword = await bcrypt.compare(password, user.password);
+
+        console.log("aksdfh6");
 
         if (!validPassword) {
             return res.status(404).json({
                 message: "Password is incorrect"
             });
         }
+        console.log("aksdfh7");
 
         if (user && validPassword) {
+            console.log("aksdfh8");
+
             const accessToken = helpers.generateAccessToken(user);
             const refreshToken = helpers.generateRefreshToken(user);
+            console.log("aksdfh9");
 
             const updatedUser = await UserModel.findOneAndUpdate({
                 email: email
@@ -81,22 +95,29 @@ const loginUser = async (req, res) => {
             }, {
                 new: true
             });
+            console.log("aksdf10");
 
             await res.cookie("refreshtoken", refreshToken, {
                 httpOnly: true,
                 secure: false,
                 path: '/'
             });
+            console.log("aksdfh11");
+
             await res.cookie("accesstoken", accessToken, {
                 secure: false,
                 path: '/'
             });
+            console.log("aksdfh12");
 
             const {
                 password,
                 refresh_token,
                 ...others
             } = user._doc;
+            console.log("aksdfh13");
+
+
             return res.status(200).json({
                 message: "Login successfully",
                 refreshToken: refreshToken,
@@ -104,6 +125,7 @@ const loginUser = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log(error);
         return res.status(500).json(error);
     }
 };
