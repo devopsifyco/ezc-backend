@@ -70,7 +70,14 @@ const loginUser = async (req, res) => {
         }
         console.log("aksdfh5");
 
-        const validPassword = await bcrypt.compare(password, user.password);
+        const validPassword = await bcrypt.compare(password, user.password)
+        try {
+            console.log('5 oke');
+        }
+        catch (error) {
+            console.log('5 eerrror:', error);
+
+        };
 
         console.log("aksdfh6");
 
