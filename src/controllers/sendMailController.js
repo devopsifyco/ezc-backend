@@ -65,9 +65,9 @@ const sendVerificationCodeEmail = async (req, res) => {
         console.log('User after update:', updatedUser);
 
         res.status(200).json({ message: `Verification code email sent successfully for token: ${verificationToken}` });
-    } catch (error) {
-        console.error('Error sending verification code email:', error);
-        res.status(500).json({ error: 'Internal server error' });
+    } catch (err) {
+        console.error('Error sending verification code email:', err);
+        res.status(500).send(err.message);
     }
 };
 

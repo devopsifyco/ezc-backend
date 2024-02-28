@@ -13,7 +13,7 @@ const router = express.Router();
 
 
 router
-    .get("/users", getAllUser)
+    .get("/users", checkAuthentication, getAllUser)
     .post('/sign-up', registerUser)
     .post('/login', loginUser)
     .post('/refresh-token', requestRefreshToken)
