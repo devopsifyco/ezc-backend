@@ -73,10 +73,12 @@ const userSchema = new mongoose.Schema({
         require: true
     },
     about_me: {
-        type: String
+        type: String,
+        default: ''
     },
     location: {
-        type: String
+        type: String,
+        default: ''
     },
 
 });
