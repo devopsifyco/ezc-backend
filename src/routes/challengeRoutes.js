@@ -3,6 +3,7 @@ const { checkAuthentication } = require('../middlewares/authMiddleware');
 const multer = require('multer');
 const {
     getAllChallenge,
+    getAChallenge,
     getChallengeByStatus,
     createChallenge,
     updateChallenge,
@@ -20,7 +21,11 @@ router
     .get(checkAuthentication, getAllChallenge)
 
 router
-    .route('/challenge/:status')
+    .route('/challenge/:id')
+    .get(checkAuthentication, getAChallenge)
+
+router
+    .route('/challenge/status/:status')
     .get(checkAuthentication, getChallengeByStatus)
 
 router.post('/challenge/create', upload.fields([
