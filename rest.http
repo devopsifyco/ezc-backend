@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:4000/api
+@baseUrl = http://192.168.43.147:4000/api
 # @baseUrl = https://ezc-test-api.greenbee.gke.vn/api
 
 # ---------------- User onboarding API -------------------
@@ -70,7 +70,7 @@ Content-Type: application/json
 ### get all challenges
 GET {{baseUrl}}/challenges
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MDg5MzQwMTMsImV4cCI6MTcwODk0NDgxM30.w6qwBP26fdbTz2mUnkLlvfHlSc1fDv_UUKPMsFIwvRc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MDkxMDQ1NjksImV4cCI6MTcwOTExNTM2OX0.0CZFCzif_ZJ7thcCt3ImTdUHXws-DG9St6QDa8YSXx8
 
 
 ### create new challenge
@@ -100,7 +100,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 ### approve challenge
 POST {{baseUrl}}/challenge/approve
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MDkxMDQ1NjksImV4cCI6MTcwOTExNTM2OX0.0CZFCzif_ZJ7thcCt3ImTdUHXws-DG9St6QDa8YSXx8
 
 {
     "id": "65b90924b0df7134dc92a01e"
