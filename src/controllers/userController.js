@@ -3,10 +3,6 @@ const UserModel = require('../models/User.model.js');
 const helpers = require('../helpers/jwt.js');
 const jwt = require('jsonwebtoken')
 
-
-// @desc    Register a new user
-// @route   POST /api/sign-up
-// @access  Public
 const registerUser = async (req, res) => {
     try {
         const { username, password, email, role } = req.body;
@@ -35,10 +31,6 @@ const registerUser = async (req, res) => {
     }
 };
 
-
-// @desc    Login as a user
-// @route   POST /api/login
-// @access  Public
 const loginUser = async (req, res) => {
     try {
         const { password, email } = req.body;
@@ -163,14 +155,9 @@ const requestRefreshToken = async (req, res) => {
     })
 }
 
-
-
-// @desc    Get all users
-// @route   POST /api/users
-// @access  Public
 const getAllUser = async (req, res) => {
     try {
-        const users = await UserModel.find();
+        const users = await UserModel.find({}, { password: 0, refresh_token: 0, role: 0, verification_code: 0, verification_code_expire: 0 });
         res.status(200).json(users);
         console.log(users);
     }
@@ -187,7 +174,7 @@ const getAllUser = async (req, res) => {
 const getUserByEmail = async (req, res) => {
     try {
         const email = req.body.email;
-        const user = await UserModel.findOne({ email: email });
+        const user = await UserModel.findOne({ email: email }, { password: 0, refresh_token: 0, role: 0, verification_code: 0, verification_code_expire: 0 });
         if (!user) {
             console.log("User not found");
             return res.status(404).send("User not found")
@@ -202,9 +189,6 @@ const getUserByEmail = async (req, res) => {
 }
 
 
-// @desc    Get all users
-// @route   POST /api/users
-// @access  Public
 const verifyVerificationCodeMatching = async (req, res) => {
     try {
         const { email, code } = req.body;
