@@ -20,6 +20,31 @@ const getAllChallenge = async (req, res) => {
     }
 }
 
+const getAChallenge = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        if (!id) {
+            return res.status(400).json("Missing challenge id");
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json("Invalid challenge ID");
+        }
+
+        const challenge = await ChallengeModel.findOne({ _id: id });
+
+        if (!challenge) {
+            return res.status(404).json("Challenge not found");
+        }
+
+        return res.status(200).json(challenge);
+    }
+    catch (error) {
+        console.log("Get a challenge error: ", error);
+        return res.status(500).send("Internal server error", error);
+    }
+}
 
 const getChallengeByStatus = async (req, res) => {
     try {
@@ -216,4 +241,4 @@ const deleteChallenge = async (req, res) => {
 }
 
 
-module.exports = { getAllChallenge, getChallengeByStatus, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge };
+module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge };

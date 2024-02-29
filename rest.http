@@ -69,9 +69,11 @@ Content-Type: application/json
 
 ### get all challenges
 GET {{baseUrl}}/challenges
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MDkxMDQ1NjksImV4cCI6MTcwOTExNTM2OX0.0CZFCzif_ZJ7thcCt3ImTdUHXws-DG9St6QDa8YSXx8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoQGdtYWlsLmNvbSIsImlhdCI6MTcwOTE3NTg3OCwiZXhwIjoxNzA5MTg2Njc4fQ.aKd9lq93gJ4zgkjjP6nQzKJJbFh3ZdGJrxB-bJhtS_o
 
+### get a challenges
+GET {{baseUrl}}/challenge?id=65dd37add2d3d7375bf34ca4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoQGdtYWlsLmNvbSIsImlhdCI6MTcwOTE3NTg3OCwiZXhwIjoxNzA5MTg2Njc4fQ.aKd9lq93gJ4zgkjjP6nQzKJJbFh3ZdGJrxB-bJhtS_o
 
 ### create new challenge
 POST {{baseUrl}}/challenge/create

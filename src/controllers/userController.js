@@ -46,23 +46,32 @@ const loginUser = async (req, res) => {
         const user = await UserModel.findOne({
             email: email
         });
+
         if (user == null) {
             return res.status(404).json({
                 message: "Account is not registered"
             });
         }
+
         if (user.is_active != "active") {
             return res.status(400).json({
                 message: "The account has been deleted. Please contact email: it.trungdang@gmail.com. We will handle it for you."
             });
         }
+
         if (!user) {
             return res.status(404).json({
                 message: "Username is incorrect"
             });
         }
 
-        const validPassword = await bcrypt.compare(password, user.password);
+        const validPassword = await bcrypt.compare(password, user.password)
+        try {
+            console.log('Compare password ok');
+        }
+        catch (error) {
+            console.log('Compare password error:', error);
+        };
 
         if (!validPassword) {
             return res.status(404).json({
@@ -87,6 +96,7 @@ const loginUser = async (req, res) => {
                 secure: false,
                 path: '/'
             });
+
             await res.cookie("accesstoken", accessToken, {
                 secure: false,
                 path: '/'
@@ -97,6 +107,7 @@ const loginUser = async (req, res) => {
                 refresh_token,
                 ...others
             } = user._doc;
+
             return res.status(200).json({
                 message: "Login successfully",
                 refreshToken: refreshToken,
@@ -104,6 +115,7 @@ const loginUser = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log(error);
         return res.status(500).json(error);
     }
 };
