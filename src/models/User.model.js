@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema({
     },
     about_me: {
         type: String,
-        default: ''
+        default: process.env.ABOUT_ME_DEFAULT
     },
     location: {
         type: String,
