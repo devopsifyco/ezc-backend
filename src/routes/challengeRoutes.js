@@ -34,7 +34,7 @@ router.post('/challenge/create', upload.fields([
     },
 ]), checkAuthentication, createChallenge);
 
-router.post('/challenge/update', upload.fields([
+router.update('/challenge/update', upload.fields([
     {
         name: 'image'
     },
