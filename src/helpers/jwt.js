@@ -7,7 +7,7 @@ const generateAccessToken = (user) => {
     return token = jwt.sign({
         email: user.email
     }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1m"
+        expiresIn: "1w"
     });
 
 }
