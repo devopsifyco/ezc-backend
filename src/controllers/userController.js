@@ -1,7 +1,12 @@
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/User.model.js');
 const helpers = require('../helpers/jwt.js');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const firebaseConfig = require('../config/firebase/firebase');
+const firebaseApp = require('firebase/app');
+const firebaseStorage = require('firebase/storage');
+firebaseApp.initializeApp(firebaseConfig.firebaseConfig)
+const storage = firebaseStorage.getStorage();
 
 const registerUser = async (req, res) => {
     try {
@@ -224,4 +229,64 @@ const verifyVerificationCodeMatching = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail };
+const updateUser = async (req, res) => {
+    try {
+        const { email, username, about_me, location } = req.body;
+        const imageFiles = req.files['image'];
+
+        if (!imageFiles || !imageFiles[0].originalname) {
+            return res.status(400).json({
+                error: 'No files uploaded or invalid file data'
+            });
+        }
+
+        const metadata = {
+            contentType: 'image/jpg'
+        }
+
+        const sanitizedFilename = imageFiles[0].originalname
+            .replace(/[^\x00-\x7F]/g, '')
+            .replace(/\s/g, '');
+
+        if (!sanitizedFilename) {
+            console.log("name ne:", sanitizedFilename);
+            return res.status(400).json({
+                error: 'Invalid filename or thumbnail name.'
+            });
+        }
+
+        const storageRefImage = firebaseStorage.ref(storage, `/avatars/${sanitizedFilename}`);
+        const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, imageFiles.buffer, metadata);
+        const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
+
+        const imagesData = {
+            name: sanitizedFilename,
+            downloadLink: downloadURL
+        };
+
+        const updatedData = {
+            email,
+            username,
+            about_me,
+            location,
+            avatar: imagesData,
+        };
+
+        const updatedUser = await UserModel.findOneAndUpdate(
+            { email: email },
+            updatedData,
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json("User not found");
+        }
+        return res.status(200).json("Update user info successfully");
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser };

@@ -1,16 +1,19 @@
 const express = require('express');
+const multer = require('multer');
 const {
     registerUser,
     getAllUser,
     loginUser,
     requestRefreshToken,
     verifyVerificationCodeMatching,
-    getUserByEmail
+    getUserByEmail,
+    updateUser
 } = require('../controllers/userController.js');
 const { checkAuthentication } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage })
 
 router
     .get("/users", checkAuthentication, getAllUser)
@@ -21,6 +24,12 @@ router
 
 router
     .post('/user', checkAuthentication, getUserByEmail);
+
+router.put('/user/update', upload.fields([
+    {
+        name: 'image'
+    },
+]), checkAuthentication, updateUser);
 
 
 module.exports = router
