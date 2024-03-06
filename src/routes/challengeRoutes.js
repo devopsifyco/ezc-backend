@@ -28,17 +28,9 @@ router
     .route('/challenge/status/:status')
     .get(checkAuthentication, getChallengeByStatus)
 
-router.post('/challenge/create', upload.fields([
-    {
-        name: 'image'
-    },
-]), checkAuthentication, createChallenge);
+router.post('/challenge/create', upload.single('image'), checkAuthentication, createChallenge);
 
-router.put('/challenge/update', upload.fields([
-    {
-        name: 'image'
-    },
-]), checkAuthentication, updateChallenge);
+router.put('/challenge/update', upload.single('image'), checkAuthentication, updateChallenge);
 
 router
     .route('/challenge/approve')
@@ -50,7 +42,7 @@ router
 
 router
     .route('/challenge/delete')
-    .delete(checkAuthentication, deleteChallenge)
+    .delete(checkAuthentication,deleteChallenge)
 
 
 module.exports = router
