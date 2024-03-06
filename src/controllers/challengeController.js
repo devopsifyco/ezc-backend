@@ -62,7 +62,7 @@ const getChallengeByStatus = async (req, res) => {
 const createChallenge = async (req, res) => {
     try {
         const { title, description, points_reward, address, company, start_time, end_time } = req.body;
-        const imageFiles = req.files['image'];
+        const imageFiles = req.body.image;
 
         if (!imageFiles || !Array.isArray(imageFiles)) {
             return res.status(400).json({
@@ -77,22 +77,13 @@ const createChallenge = async (req, res) => {
         const imagesData = [];
 
         for (const imageFile of imageFiles) {
-            const sanitizedFilename = imageFile.originalname
-                .replace(/[^\x00-\x7F]/g, '')
-                .replace(/\s/g, '');
-
-            if (!sanitizedFilename) {
-                return res.status(400).json({
-                    error: 'Invalid filename or thumbnail name.'
-                });
-            }
-
-            const storageRefImage = firebaseStorage.ref(storage, `/images/${sanitizedFilename}`);
-            const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, imageFile.buffer, metadata);
+            const storageRefImage = firebaseStorage.ref(storage, `/images/${imageFile.fileName}`);
+            const buffer = new Buffer(imageFile.base64, 'base64');
+            const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, buffer, metadata);
             const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
 
             imagesData.push({
-                name: imageFile.originalname,
+                name: imageFile.fileName,
                 downloadLink: downloadURL
             });
         }
