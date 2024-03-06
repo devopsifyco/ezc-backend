@@ -25,11 +25,9 @@ router
 router
     .post('/user', checkAuthentication, getUserByEmail);
 
-router.put('/user/update', upload.fields([
-    {
-        name: 'image'
-    },
-]), checkAuthentication, updateUser);
+router.put('/user/update', upload.single(
+    'image'
+), checkAuthentication, updateUser);
 
 
 module.exports = router
