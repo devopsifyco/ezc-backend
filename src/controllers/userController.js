@@ -232,9 +232,8 @@ const verifyVerificationCodeMatching = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { email, username, about_me, location } = req.body;
-        const imageFiles = req.files['image'];
-
-        if (!imageFiles || !imageFiles[0].originalname) {
+        const imageFiles = req.file;
+        if (!imageFiles || !imageFiles.originalname) {
             return res.status(400).json({
                 error: 'No files uploaded or invalid file data'
             });
@@ -244,18 +243,17 @@ const updateUser = async (req, res) => {
             contentType: 'image/jpg'
         }
 
-        const sanitizedFilename = imageFiles[0].originalname
+        const sanitizedFilename = imageFiles.originalname
             .replace(/[^\x00-\x7F]/g, '')
             .replace(/\s/g, '');
 
         if (!sanitizedFilename) {
-            console.log("name ne:", sanitizedFilename);
             return res.status(400).json({
                 error: 'Invalid filename or thumbnail name.'
             });
         }
 
-        const storageRefImage = firebaseStorage.ref(storage, `/avatars/${sanitizedFilename}`);
+        const storageRefImage = await firebaseStorage.ref(storage, `/avatars/${sanitizedFilename}`);
         const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, imageFiles.buffer, metadata);
         const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
 
@@ -281,6 +279,8 @@ const updateUser = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json("User not found");
         }
+        console.log(sanitizedFilename);
+        console.log(downloadURL);
         return res.status(200).json("Update user info successfully");
     }
     catch (err) {
