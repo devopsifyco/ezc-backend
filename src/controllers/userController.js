@@ -231,11 +231,11 @@ const verifyVerificationCodeMatching = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const { email, username, about_me, location } = req.body;
-        const imageFiles = req.file;
-        if (!imageFiles || !imageFiles.originalname) {
+        const { email, username, about_me, location, image } = req.body;
+
+        if (!image) {
             return res.status(400).json({
-                error: 'No files uploaded or invalid file data'
+                error: 'No image provided',
             });
         }
 
@@ -243,7 +243,7 @@ const updateUser = async (req, res) => {
             contentType: 'image/jpg'
         }
 
-        const sanitizedFilename = imageFiles.originalname
+        const sanitizedFilename = image
             .replace(/[^\x00-\x7F]/g, '')
             .replace(/\s/g, '');
 
@@ -254,7 +254,7 @@ const updateUser = async (req, res) => {
         }
 
         const storageRefImage = await firebaseStorage.ref(storage, `/avatars/${sanitizedFilename}`);
-        const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, imageFiles.buffer, metadata);
+        const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, image, metadata);
         const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
 
         const imagesData = {
@@ -282,11 +282,11 @@ const updateUser = async (req, res) => {
         console.log(sanitizedFilename);
         console.log(downloadURL);
         return res.status(200).json("Update user info successfully");
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).send("Internal server error");
     }
 }
+
 
 module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser };
