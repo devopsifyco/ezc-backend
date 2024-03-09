@@ -1,5 +1,5 @@
-const ChallengeModel = require('../models/Challenge.model')
-
+const ChallengeModel = require('../models/Challenge.model');
+const UserModel = require('../models/User.model');
 const firebaseConfig = require('../config/firebase/firebase');
 const firebaseApp = require('firebase/app');
 const firebaseStorage = require('firebase/storage');
@@ -61,7 +61,7 @@ const getChallengeByStatus = async (req, res) => {
 
 const createChallenge = async (req, res) => {
     try {
-        const { title, description, points_reward, address, company, start_time, end_time } = req.body;
+        const { title, description, points_reward, address, company, start_time, end_time, email } = req.body;
         const imageFiles = req.body.image;
 
         if (!imageFiles || !Array.isArray(imageFiles)) {
@@ -78,7 +78,7 @@ const createChallenge = async (req, res) => {
 
         for (const imageFile of imageFiles) {
             const storageRefImage = firebaseStorage.ref(storage, `/images/${imageFile.fileName}`);
-            const buffer = new Buffer(imageFile.base64, 'base64');
+            const buffer = new Buffer.from(imageFile.base64, 'base64');
             const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, buffer, metadata);
             const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
 
@@ -87,8 +87,11 @@ const createChallenge = async (req, res) => {
                 downloadLink: downloadURL
             });
         }
+        const user = await UserModel.findOne({ email: email });
+        const ownerId = user._id
 
         const newChallenge = new ChallengeModel({
+            owner_id: ownerId,
             title: title,
             images_path: imagesData,
             description: description,
@@ -231,5 +234,37 @@ const deleteChallenge = async (req, res) => {
     }
 }
 
+const joinChallenge = async (req, res) => {
+    try {
 
-module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge };
+        const { email, id } = req.body;
+
+        const user = await UserModel.findOne({ email: email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const challenge = await ChallengeModel.findById(id);
+        if (!challenge) {
+            return res.status(404).json({ message: 'Challenge not found' });
+        }
+
+        if (challenge.participants.includes(user._id)) {
+            return res.status(400).json({ message: 'User is already a participant in this challenge' });
+        }
+        challenge.participants.push(user._id);
+        await challenge.save();
+        return res.status(200).json({ message: 'User successfully joined the challenge' });
+
+        
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+
+}
+
+
+module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge };
