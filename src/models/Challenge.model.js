@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const challengeSchema = new mongoose.Schema({
+    owner_id: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        required: true,
+    },
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
@@ -56,6 +60,11 @@ const challengeSchema = new mongoose.Schema({
             message: 'End time must be greater than start time'
         }
     },
+    participants: [{
+            type: mongoose.Schema.Types.ObjectId, ref: 'User',
+            default: []
+        }
+    ]
 });
 
 const ChallengeModel = mongoose.model('Challenge', challengeSchema);

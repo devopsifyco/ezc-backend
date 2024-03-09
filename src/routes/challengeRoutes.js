@@ -9,7 +9,8 @@ const {
     updateChallenge,
     approveChallenge,
     rejectChallenge,
-    deleteChallenge
+    deleteChallenge,
+    joinChallenge
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -42,7 +43,11 @@ router
 
 router
     .route('/challenge/delete')
-    .delete(checkAuthentication,deleteChallenge)
+    .delete(checkAuthentication, deleteChallenge)
+
+router
+    .route('/challenge/join')
+    .post(checkAuthentication, joinChallenge)
 
 
 module.exports = router
