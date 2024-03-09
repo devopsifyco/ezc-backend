@@ -32,7 +32,9 @@ const getAChallenge = async (req, res) => {
             return res.status(400).json("Invalid challenge ID");
         }
 
-        const challenge = await ChallengeModel.findOne({ _id: id });
+        const challenge = await ChallengeModel.findOne({ _id: id })
+                .populate("owner_id")
+                .populate("participants")
 
         if (!challenge) {
             return res.status(404).json("Challenge not found");
