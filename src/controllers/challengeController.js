@@ -20,6 +20,24 @@ const getAllChallenge = async (req, res) => {
     }
 }
 
+const getAllChallengesUserNotJoinYet = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await UserModel.findOne({ email: email });
+        const challenges = await ChallengeModel.find({ participants: { $ne: user._id } });
+        const challengeFiltered = challenges.filter(challenge => challenge.status === 'approved' );
+        if(!challengeFiltered.length){
+            return res.status(404).json('The user dont join any challenges that was approved');
+        }
+        console.log(challengeFiltered);
+        return res.status(200).json(challengeFiltered);
+    }
+    catch (err) {
+        console.log("Get challenges that user dont join before", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
 const getAChallenge = async (req, res) => {
     try {
         const id = req.params.id;
@@ -29,19 +47,19 @@ const getAChallenge = async (req, res) => {
         }
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json("Invalid challenge ID");
+            return res.status(400).json("Invalid challenge ID 1");
         }
 
         const challenge = await ChallengeModel.findOne({ _id: id })
-                .populate({
-                    path: 'owner_id',
-                    select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
-                })
-                .populate({
-                    path: 'participants',
-                    select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
-                })
-                .exec()
+            .populate({
+                path: 'owner_id',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .populate({
+                path: 'participants',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .exec()
 
         if (!challenge) {
             return res.status(404).json("Challenge not found");
@@ -127,7 +145,7 @@ const updateChallenge = async (req, res) => {
         console.log(req.body);
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json("Invalid challenge ID");
+            return res.status(400).json("Invalid challenge ID 2");
         }
 
         const updatedData = {
@@ -270,7 +288,7 @@ const joinChallenge = async (req, res) => {
         await challenge.save();
         return res.status(200).json({ message: 'User successfully joined the challenge' });
 
-        
+
     }
     catch (err) {
         console.log(err);
@@ -280,4 +298,4 @@ const joinChallenge = async (req, res) => {
 }
 
 
-module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge };
+module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge, getAllChallengesUserNotJoinYet };
