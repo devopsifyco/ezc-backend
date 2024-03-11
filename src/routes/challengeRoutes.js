@@ -10,7 +10,8 @@ const {
     approveChallenge,
     rejectChallenge,
     deleteChallenge,
-    joinChallenge
+    joinChallenge,
+    getAllChallengesUserNotJoinYet
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -20,6 +21,10 @@ const upload = multer({ storage: storage })
 router
     .route('/challenges')
     .get(checkAuthentication, getAllChallenge)
+
+router
+    .route('/challenges/not-participate')
+    .post(checkAuthentication, getAllChallengesUserNotJoinYet)
 
 router
     .route('/challenge/:id')
