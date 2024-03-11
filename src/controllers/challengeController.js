@@ -33,8 +33,15 @@ const getAChallenge = async (req, res) => {
         }
 
         const challenge = await ChallengeModel.findOne({ _id: id })
-                .populate("owner_id")
-                .populate("participants")
+                .populate({
+                    path: 'owner_id',
+                    select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+                })
+                .populate({
+                    path: 'participants',
+                    select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+                })
+                .exec()
 
         if (!challenge) {
             return res.status(404).json("Challenge not found");
@@ -250,6 +257,10 @@ const joinChallenge = async (req, res) => {
         const challenge = await ChallengeModel.findById(id);
         if (!challenge) {
             return res.status(404).json({ message: 'Challenge not found' });
+        }
+
+        if (String(challenge.owner_id) === String(user._id)) {
+            return res.status(400).json({ message: 'You cannot participate in your challenge' });
         }
 
         if (challenge.participants.includes(user._id)) {
