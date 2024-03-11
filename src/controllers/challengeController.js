@@ -1,5 +1,5 @@
-const ChallengeModel = require('../models/Challenge.model')
-
+const ChallengeModel = require('../models/Challenge.model');
+const UserModel = require('../models/User.model');
 const firebaseConfig = require('../config/firebase/firebase');
 const firebaseApp = require('firebase/app');
 const firebaseStorage = require('firebase/storage');
@@ -20,6 +20,32 @@ const getAllChallenge = async (req, res) => {
     }
 }
 
+const getAllChallengesUserNotJoinYet = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await UserModel.findOne({ email: email });
+        const challenges = await ChallengeModel.find({ participants: { $ne: user._id } })
+            .populate({
+                path: 'owner_id',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .populate({
+                path: 'participants',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+        const challengeFiltered = challenges.filter(challenge => challenge.status === 'approved');
+        if (!challengeFiltered.length) {
+            return res.status(404).json('The user dont join any challenges that was approved');
+        }
+        console.log(challengeFiltered);
+        return res.status(200).json(challengeFiltered);
+    }
+    catch (err) {
+        console.log("Get challenges that user dont join before", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
 const getAChallenge = async (req, res) => {
     try {
         const id = req.params.id;
@@ -29,10 +55,19 @@ const getAChallenge = async (req, res) => {
         }
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json("Invalid challenge ID");
+            return res.status(400).json("Invalid challenge ID 1");
         }
 
-        const challenge = await ChallengeModel.findOne({ _id: id });
+        const challenge = await ChallengeModel.findOne({ _id: id })
+            .populate({
+                path: 'owner_id',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .populate({
+                path: 'participants',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .exec()
 
         if (!challenge) {
             return res.status(404).json("Challenge not found");
@@ -61,7 +96,7 @@ const getChallengeByStatus = async (req, res) => {
 
 const createChallenge = async (req, res) => {
     try {
-        const { title, description, points_reward, address, company, start_time, end_time } = req.body;
+        const { title, description, points_reward, address, company, start_time, end_time, email } = req.body;
         const imageFiles = req.body.image;
 
         if (!imageFiles || !Array.isArray(imageFiles)) {
@@ -78,7 +113,7 @@ const createChallenge = async (req, res) => {
 
         for (const imageFile of imageFiles) {
             const storageRefImage = firebaseStorage.ref(storage, `/images/${imageFile.fileName}`);
-            const buffer = new Buffer(imageFile.base64, 'base64');
+            const buffer = new Buffer.from(imageFile.base64, 'base64');
             const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, buffer, metadata);
             const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
 
@@ -87,8 +122,11 @@ const createChallenge = async (req, res) => {
                 downloadLink: downloadURL
             });
         }
+        const user = await UserModel.findOne({ email: email });
+        const ownerId = user._id
 
         const newChallenge = new ChallengeModel({
+            owner_id: ownerId,
             title: title,
             images_path: imagesData,
             description: description,
@@ -115,7 +153,7 @@ const updateChallenge = async (req, res) => {
         console.log(req.body);
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json("Invalid challenge ID");
+            return res.status(400).json("Invalid challenge ID 2");
         }
 
         const updatedData = {
@@ -231,5 +269,41 @@ const deleteChallenge = async (req, res) => {
     }
 }
 
+const joinChallenge = async (req, res) => {
+    try {
 
-module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge };
+        const { email, id } = req.body;
+
+        const user = await UserModel.findOne({ email: email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const challenge = await ChallengeModel.findById(id);
+        if (!challenge) {
+            return res.status(404).json({ message: 'Challenge not found' });
+        }
+
+        if (String(challenge.owner_id) === String(user._id)) {
+            return res.status(400).json({ message: 'You cannot participate in your challenge' });
+        }
+
+        if (challenge.participants.includes(user._id)) {
+            return res.status(400).json({ message: 'User is already a participant in this challenge' });
+        }
+        challenge.participants.push(user._id);
+        await challenge.save();
+        return res.status(200).json({ message: 'User successfully joined the challenge' });
+
+
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+
+}
+
+
+module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge, getAllChallengesUserNotJoinYet };
