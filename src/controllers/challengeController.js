@@ -24,9 +24,17 @@ const getAllChallengesUserNotJoinYet = async (req, res) => {
     try {
         const email = req.body.email;
         const user = await UserModel.findOne({ email: email });
-        const challenges = await ChallengeModel.find({ participants: { $ne: user._id } });
-        const challengeFiltered = challenges.filter(challenge => challenge.status === 'approved' );
-        if(!challengeFiltered.length){
+        const challenges = await ChallengeModel.find({ participants: { $ne: user._id } })
+            .populate({
+                path: 'owner_id',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .populate({
+                path: 'participants',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+        const challengeFiltered = challenges.filter(challenge => challenge.status === 'approved');
+        if (!challengeFiltered.length) {
             return res.status(404).json('The user dont join any challenges that was approved');
         }
         console.log(challengeFiltered);
