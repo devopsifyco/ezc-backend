@@ -118,6 +118,88 @@ const loginUser = async (req, res) => {
 };
 
 
+const loginAdmin = async (req, res) => {
+    try {
+        const { password, email } = req.body;
+
+        const user = await UserModel.findOne({
+            email: email
+        });
+
+        if (user == null) {
+            return res.status(404).json({
+                message: "Account is not registered"
+            });
+        }
+
+        if (!user) {
+            return res.status(404).json({
+                message: "Username is incorrect"
+            });
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password)
+        try {
+            console.log('Compare password ok');
+        }
+        catch (error) {
+            console.log('Compare password error:', error);
+        };
+
+        if (!validPassword) {
+            return res.status(404).json({
+                message: "Password is incorrect"
+            });
+        }
+
+        if(user.role !== 'admin'){
+            return res.status(403).json({
+                message: "Lack the necessary permissions to view an admin page"
+            });
+        }
+
+        if (user && validPassword) {
+            const accessToken = helpers.generateAccessToken(user);
+            const refreshToken = helpers.generateRefreshToken(user);
+
+            const updatedUser = await UserModel.findOneAndUpdate({
+                email: email
+            }, {
+                refresh_token: refreshToken
+            }, {
+                new: true
+            });
+
+            await res.cookie("refreshtoken", refreshToken, {
+                httpOnly: true,
+                secure: false,
+                path: '/'
+            });
+
+            await res.cookie("accesstoken", accessToken, {
+                secure: false,
+                path: '/'
+            });
+
+            const {
+                password,
+                refresh_token,
+                ...others
+            } = user._doc;
+
+            return res.status(200).json({
+                message: "Login successfully",
+                refreshToken: refreshToken,
+                accessToken: accessToken
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+};
+
+
 
 const requestRefreshToken = async (req, res) => {
     const { refreshToken, email } = req.body;
@@ -289,4 +371,4 @@ const updateUser = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser };
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser, loginAdmin };
