@@ -7,7 +7,8 @@ const {
     requestRefreshToken,
     verifyVerificationCodeMatching,
     getUserByEmail,
-    updateUser
+    updateUser,
+    loginAdmin
 } = require('../controllers/userController.js');
 const { checkAuthentication } = require('../middlewares/authMiddleware');
 
@@ -24,6 +25,9 @@ router
 
 router
     .post('/user', checkAuthentication, getUserByEmail);
+
+router
+    .post('/admin-login', loginAdmin);
 
 router.put('/user/update', upload.single(
     'image'
