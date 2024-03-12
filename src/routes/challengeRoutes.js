@@ -11,7 +11,8 @@ const {
     rejectChallenge,
     deleteChallenge,
     joinChallenge,
-    getAllChallengesUserNotJoinYet
+    getAllChallengesUserNotJoinYet,
+    checkInController
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -53,6 +54,10 @@ router
 router
     .route('/challenge/join')
     .post(checkAuthentication, joinChallenge)
+
+router
+    .route('/challenge/checkin')
+    .post(checkAuthentication, checkInController)
 
 
 module.exports = router

@@ -306,4 +306,46 @@ const joinChallenge = async (req, res) => {
 }
 
 
-module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge, getAllChallengesUserNotJoinYet };
+const checkInController = async (req, res) => {
+    try {
+
+        const { challengeId } = req.params;
+        const checkinData = req.body;
+
+        const challenge = await ChallengeModel.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found' });
+        }
+
+        for (const { userId, isCheckin } of checkinData) {
+            const participantIndex = challenge.participants.findIndex(participant => participant.user.equals(userId));
+            if (participantIndex !== -1) {
+                challenge.participants[participantIndex].is_checkin = isCheckin;
+            }
+        }
+
+        await challenge.save();
+
+        res.json({ message: 'Check-in statuses updated successfully' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+}
+
+
+module.exports = {
+    getAllChallenge,
+    getChallengeByStatus,
+    getAChallenge,
+    createChallenge,
+    updateChallenge,
+    approveChallenge,
+    rejectChallenge,
+    deleteChallenge,
+    joinChallenge,
+    getAllChallengesUserNotJoinYet,
+    checkInController
+};
+
