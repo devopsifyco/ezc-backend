@@ -61,10 +61,9 @@ const challengeSchema = new mongoose.Schema({
         }
     },
     participants: [{
-            type: mongoose.Schema.Types.ObjectId, ref: 'User',
-            default: []
-        }
-    ]
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        is_checkin: { type: Boolean, default: false }
+    }]
 });
 
 const ChallengeModel = mongoose.model('Challenge', challengeSchema);

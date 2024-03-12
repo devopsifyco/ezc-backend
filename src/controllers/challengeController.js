@@ -310,4 +310,50 @@ const joinChallenge = async (req, res) => {
 }
 
 
-module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge, getAllChallengesUserNotJoinYet };
+const checkInController = async (req, res) => {
+    try {
+        const { checkinData, email, challengeId } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const challenge = await ChallengeModel.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found' });
+        }
+
+        if (String(challenge.owner_id) !== String(user._id)) {
+            return res.status(403).json({ error: `Unauthorized access! ${user.email} is not challenge owner of ${challenge.title} challenge` });
+        }
+
+        for (const { userId, isCheckin } of checkinData) {
+            const participant = challenge.participants.find(participant => String(participant._id) === userId);
+            if (participant) {
+                participant.is_checkin = isCheckin;
+            }
+        }
+
+        await challenge.save();
+        return res.status(204).json({ message: `Check-in participants '${challenge.title}' successfully` });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
+module.exports = {
+    getAllChallenge,
+    getChallengeByStatus,
+    getAChallenge,
+    createChallenge,
+    updateChallenge,
+    approveChallenge,
+    rejectChallenge,
+    deleteChallenge,
+    joinChallenge,
+    getAllChallengesUserNotJoinYet,
+    checkInController
+};
+
