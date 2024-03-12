@@ -56,7 +56,7 @@ router
     .post(checkAuthentication, joinChallenge)
 
 router
-    .route('/challenge/checkin')
+    .route('/challenge/check-in')
     .post(checkAuthentication, checkInController)
 
 
