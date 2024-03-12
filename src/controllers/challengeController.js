@@ -24,11 +24,15 @@ const getAllChallengesUserNotJoinYet = async (req, res) => {
     try {
         const email = req.body.email;
         const user = await UserModel.findOne({ email: email });
-        const challenges = await ChallengeModel.find({ participants: { $ne: user._id } })
-            .populate({
-                path: 'owner_id',
-                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
-            })
+        const challenges = await ChallengeModel.find({
+            $and: [
+                { participants: { $ne: user._id } },
+                { owner_id: { $ne: user._id } }
+            ]
+        }).populate({
+            path: 'owner_id',
+            select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+        })
             .populate({
                 path: 'participants',
                 select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
