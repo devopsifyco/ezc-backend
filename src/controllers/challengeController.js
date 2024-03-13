@@ -24,15 +24,21 @@ const getAllChallengesUserNotJoinYet = async (req, res) => {
     try {
         const email = req.body.email;
         const user = await UserModel.findOne({ email: email });
+
         const challenges = await ChallengeModel.find({
             $and: [
-                { participants: { $ne: user._id } },
-                { owner_id: { $ne: user._id } }
+                {
+                    $nor: [
+                        { participants: { $elemMatch: { _id: user._id } } },
+                        { owner_id: user._id }
+                    ]
+                }
             ]
-        }).populate({
-            path: 'owner_id',
-            select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
         })
+            .populate({
+                path: 'owner_id',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
             .populate({
                 path: 'participants',
                 select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
@@ -84,6 +90,42 @@ const getAChallenge = async (req, res) => {
         return res.status(500).send("Internal server error", error);
     }
 }
+
+const getParticipantsOfAChallenge = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json("Missing challenge id");
+        }
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json("Invalid challenge ID 1");
+        }
+
+        const challenge = await ChallengeModel.findOne({ _id: id });
+        if (!challenge) {
+            return res.status(404).json("Challenge not found");
+        }
+
+        const participantIds = challenge.participants.map(participant => participant._id);
+
+        const populatedParticipants = [];
+
+        for (const participantId of participantIds) {
+            const userData = await UserModel.findOne({ _id: participantId })
+                .select('-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token');
+            if (userData) {
+                populatedParticipants.push(userData);
+            }
+        }
+
+        return res.status(200).json(populatedParticipants);
+    }
+    catch (error) {
+        console.log("Get a challenge error: ", error);
+        return res.status(500).send("Internal server error", error);
+    }
+}
+
 
 const getChallengeByStatus = async (req, res) => {
     try {
@@ -354,6 +396,7 @@ module.exports = {
     deleteChallenge,
     joinChallenge,
     getAllChallengesUserNotJoinYet,
-    checkInController
+    checkInController,
+    getParticipantsOfAChallenge
 };
 
