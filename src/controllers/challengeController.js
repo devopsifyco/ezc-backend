@@ -24,7 +24,17 @@ const getAllChallengesUserNotJoinYet = async (req, res) => {
     try {
         const email = req.body.email;
         const user = await UserModel.findOne({ email: email });
-        const challenges = await ChallengeModel.find({ participants: { $ne: user._id } })
+
+        const challenges = await ChallengeModel.find({
+            $and: [
+                {
+                    $nor: [
+                        { participants: { $elemMatch: { _id: user._id } } },
+                        { owner_id: user._id }
+                    ]
+                }
+            ]
+        })
             .populate({
                 path: 'owner_id',
                 select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
@@ -80,6 +90,42 @@ const getAChallenge = async (req, res) => {
         return res.status(500).send("Internal server error", error);
     }
 }
+
+const getParticipantsOfAChallenge = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json("Missing challenge id");
+        }
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json("Invalid challenge ID 1");
+        }
+
+        const challenge = await ChallengeModel.findOne({ _id: id });
+        if (!challenge) {
+            return res.status(404).json("Challenge not found");
+        }
+
+        const participantIds = challenge.participants.map(participant => participant._id);
+
+        const populatedParticipants = [];
+
+        for (const participantId of participantIds) {
+            const userData = await UserModel.findOne({ _id: participantId })
+                .select('-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token');
+            if (userData) {
+                populatedParticipants.push(userData);
+            }
+        }
+
+        return res.status(200).json(populatedParticipants);
+    }
+    catch (error) {
+        console.log("Get a challenge error: ", error);
+        return res.status(500).send("Internal server error", error);
+    }
+}
+
 
 const getChallengeByStatus = async (req, res) => {
     try {
@@ -306,4 +352,51 @@ const joinChallenge = async (req, res) => {
 }
 
 
-module.exports = { getAllChallenge, getChallengeByStatus, getAChallenge, createChallenge, updateChallenge, approveChallenge, rejectChallenge, deleteChallenge, joinChallenge, getAllChallengesUserNotJoinYet };
+const checkInController = async (req, res) => {
+    try {
+        const { checkinData, email, challengeId } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const challenge = await ChallengeModel.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found' });
+        }
+
+        if (String(challenge.owner_id) !== String(user._id)) {
+            return res.status(403).json({ error: `Unauthorized access! ${user.email} is not challenge owner of ${challenge.title} challenge` });
+        }
+
+        for (const { userId, isCheckin } of checkinData) {
+            const participant = challenge.participants.find(participant => String(participant._id) === userId);
+            if (participant) {
+                participant.is_checkin = isCheckin;
+            }
+        }
+
+        await challenge.save();
+        return res.status(204).json({ message: `Check-in participants '${challenge.title}' successfully` });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
+module.exports = {
+    getAllChallenge,
+    getChallengeByStatus,
+    getAChallenge,
+    createChallenge,
+    updateChallenge,
+    approveChallenge,
+    rejectChallenge,
+    deleteChallenge,
+    joinChallenge,
+    getAllChallengesUserNotJoinYet,
+    checkInController,
+    getParticipantsOfAChallenge
+};
+
