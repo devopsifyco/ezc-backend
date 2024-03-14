@@ -219,7 +219,6 @@ const updateChallenge = async (req, res) => {
             });
         }
 
-        console.log(imageFiles);
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json("Invalid challenge ID 2");
