@@ -384,6 +384,54 @@ const checkInController = async (req, res) => {
     }
 }
 
+const confirmFinishChallenge = async (req, res) => {
+    try {
+        const { email, id } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const challenge = await ChallengeModel.findById(id);
+        if (!challenge) {
+            return res.status(404).json({ message: 'Challenge not found' });
+        }
+        if (String(challenge.owner_id) != String(user._id)) {
+            return res.status(400).json({ message: 'You are not the owner of this challenge' });
+        }
+
+        const currentTime = new Date();
+        if (currentTime < challenge.start_time) {
+            return res.status(400).json({ message: 'The challenge not start yet' });
+        }
+        if (currentTime < (challenge.start_time + 2)) {
+            return res.status(400).json({ message: 'Complete the challenge too fast, try after at least 2h from the challenge start' });
+        }
+
+        await ChallengeModel.updateOne({ _id: id }, { $set: { status: 'finished' } });
+
+        const participants = challenge.participants;
+        for (const participant of participants) {
+            console.log("participant", participant);
+
+            if (!participant.is_checkin) {
+                const user = await UserModel.findById(participant._id);
+                if (!user) {
+                    console.log(`User with ID ${participant._id} not found`);
+                } else {
+                    user.points += challenge.points_reward;
+                    await user.save();
+                }
+            }
+        }
+        return res.status(200).json({ message: 'Completed the challenge successfully' });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+
+}
 
 module.exports = {
     getAllChallenge,
@@ -397,6 +445,7 @@ module.exports = {
     joinChallenge,
     getAllChallengesUserNotJoinYet,
     checkInController,
-    getParticipantsOfAChallenge
+    getParticipantsOfAChallenge,
+    confirmFinishChallenge
 };
 
