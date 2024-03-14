@@ -195,8 +195,31 @@ const createChallenge = async (req, res) => {
 
 const updateChallenge = async (req, res) => {
     try {
-        const { id, title, images_path, description, points_reward, address, company, start_time, end_time } = req.body;
-        console.log(req.body);
+        const { id, title, description, points_reward, address, company, start_time, end_time } = req.body;
+        const imageFiles = req.body.images_path;
+        console.log("imageFiles", imageFiles);
+
+        console.log("title", title);
+        
+        const metadata = {
+            contentType: 'image/jpg'
+        }
+
+        const imagesData = [];
+
+        for (const imageFile of imageFiles) {
+            const storageRefImage = firebaseStorage.ref(storage, `/images/${imageFile.fileName}`);
+            const buffer = new Buffer.from(imageFile.base64, 'base64');
+            const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, buffer, metadata);
+            const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
+
+            imagesData.push({
+                name: imageFile.fileName,
+                downloadLink: downloadURL
+            });
+        }
+
+        console.log(imageFiles);
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json("Invalid challenge ID 2");
@@ -204,7 +227,7 @@ const updateChallenge = async (req, res) => {
 
         const updatedData = {
             title,
-            images_path,
+            images_path: imagesData,
             description,
             points_reward,
             address,
