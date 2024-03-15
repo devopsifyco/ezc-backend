@@ -8,7 +8,8 @@ const {
     verifyVerificationCodeMatching,
     getUserByEmail,
     updateUser,
-    loginAdmin
+    loginAdmin,
+    leaderboard
 } = require('../controllers/userController.js');
 const { checkAuthentication } = require('../middlewares/authMiddleware');
 
@@ -28,6 +29,9 @@ router
 
 router
     .post('/admin-login', loginAdmin);
+
+router
+    .get('/leaderboard', leaderboard);
 
 router.put('/user/update', upload.single(
     'image'

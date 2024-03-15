@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    highest_points: {
+        type: Number,
+        default: 0,
+    },
     role: {
         type: String,
         enum: ['user', 'admin', 'sub-admin', 'challenge-owner'],
