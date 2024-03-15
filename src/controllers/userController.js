@@ -371,4 +371,21 @@ const updateUser = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser, loginAdmin };
+const leaderboard = async (req, res) => {
+    try {
+        const users = await UserModel.find().sort({ highest_points: -1 }).limit(5);
+
+        const leaderboard = users.map(user => ({
+            username: user.username,
+            highest_points: user.highest_points
+        }));
+        console.log("Get leaderboard successfull");
+        return res.status(200).json(leaderboard);
+    } catch (error) {
+        console.error('Error generating leaderboard:', error.message);
+        throw error;
+    }
+
+}
+
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser, loginAdmin, leaderboard};

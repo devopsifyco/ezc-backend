@@ -420,6 +420,7 @@ const confirmFinishChallenge = async (req, res) => {
                     console.log(`User with ID ${participant._id} not found`);
                 } else {
                     user.points += challenge.points_reward;
+                    user.highest_points += challenge.points_reward;
                     await user.save();
                 }
             }
