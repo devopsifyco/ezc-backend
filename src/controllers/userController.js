@@ -260,7 +260,7 @@ const getAllUser = async (req, res) => {
 // @access  Public
 const getUserByEmail = async (req, res) => {
     try {
-        const email = req.body.email;
+        const email = req.params.email;
         const user = await UserModel.findOne({ email: email }, { password: 0, refresh_token: 0, role: 0, verification_code: 0, verification_code_expire: 0 });
         if (!user) {
             console.log("User not found");
