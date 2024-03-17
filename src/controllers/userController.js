@@ -260,7 +260,7 @@ const getAllUser = async (req, res) => {
 // @access  Public
 const getUserByEmail = async (req, res) => {
     try {
-        const email = req.body.email;
+        const email = req.params.email;
         const user = await UserModel.findOne({ email: email }, { password: 0, refresh_token: 0, role: 0, verification_code: 0, verification_code_expire: 0 });
         if (!user) {
             console.log("User not found");
@@ -371,4 +371,21 @@ const updateUser = async (req, res) => {
 }
 
 
-module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser, loginAdmin };
+const leaderboard = async (req, res) => {
+    try {
+        const users = await UserModel.find().sort({ highest_points: -1 }).limit(5);
+
+        const leaderboard = users.map(user => ({
+            username: user.username,
+            highest_points: user.highest_points
+        }));
+        console.log("Get leaderboard successfull");
+        return res.status(200).json(leaderboard);
+    } catch (error) {
+        console.error('Error generating leaderboard:', error.message);
+        throw error;
+    }
+
+}
+
+module.exports = { getAllUser, registerUser, verifyVerificationCodeMatching, loginUser, requestRefreshToken, getUserByEmail, updateUser, loginAdmin, leaderboard};

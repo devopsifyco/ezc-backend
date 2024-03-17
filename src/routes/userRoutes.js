@@ -8,7 +8,8 @@ const {
     verifyVerificationCodeMatching,
     getUserByEmail,
     updateUser,
-    loginAdmin
+    loginAdmin,
+    leaderboard
 } = require('../controllers/userController.js');
 const { checkAuthentication } = require('../middlewares/authMiddleware');
 
@@ -21,13 +22,16 @@ router
     .post('/sign-up', registerUser)
     .post('/login', loginUser)
     .post('/refresh-token', requestRefreshToken)
-    .post('/verify-email', verifyVerificationCodeMatching);
+    .post('/verify-email', verifyVerificationCodeMatching)
 
 router
-    .post('/user', checkAuthentication, getUserByEmail);
+    .get('/user/:email', checkAuthentication, getUserByEmail);
 
 router
     .post('/admin-login', loginAdmin);
+
+router
+    .get('/leaderboard', leaderboard);
 
 router.put('/user/update', upload.single(
     'image'

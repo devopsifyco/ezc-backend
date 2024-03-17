@@ -436,12 +436,13 @@ const confirmFinishChallenge = async (req, res) => {
         for (const participant of participants) {
             console.log("participant", participant);
 
-            if (!participant.is_checkin) {
+            if (participant.is_checkin) {
                 const user = await UserModel.findById(participant._id);
                 if (!user) {
                     console.log(`User with ID ${participant._id} not found`);
                 } else {
                     user.points += challenge.points_reward;
+                    user.highest_points += challenge.points_reward;
                     await user.save();
                 }
             }
