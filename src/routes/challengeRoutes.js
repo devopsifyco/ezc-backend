@@ -14,7 +14,8 @@ const {
     getAllChallengesUserNotJoinYet,
     checkInController,
     getParticipantsOfAChallenge,
-    confirmFinishChallenge
+    confirmFinishChallenge,
+    challengeThatUseHasJoined
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -28,6 +29,10 @@ router
 router
     .route('/challenges/not-participate')
     .post(checkAuthentication, getAllChallengesUserNotJoinYet)
+
+router
+    .route('/challenges/joined')
+    .post(checkAuthentication, challengeThatUseHasJoined)
 
 router
     .route('/challenge/participants/:id')

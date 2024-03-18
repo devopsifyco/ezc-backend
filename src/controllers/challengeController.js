@@ -434,6 +434,30 @@ const confirmFinishChallenge = async (req, res) => {
 
 }
 
+
+const challengeThatUseHasJoined = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const userChallenges = await ChallengeModel.find();
+
+        const challengesUserJoined = userChallenges.filter(challenge => {
+            return challenge.participants.some(participant => participant._id.toString() === user._id.toString());
+        });
+
+        return res.status(200).json({ userChallenges: challengesUserJoined });
+    }
+    catch (err) {
+        console.log("Get challenge", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
 module.exports = {
     getAllChallenge,
     getChallengeByStatus,
@@ -447,6 +471,7 @@ module.exports = {
     getAllChallengesUserNotJoinYet,
     checkInController,
     getParticipantsOfAChallenge,
-    confirmFinishChallenge
+    confirmFinishChallenge,
+    challengeThatUseHasJoined
 };
 
