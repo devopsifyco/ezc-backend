@@ -377,7 +377,7 @@ const checkInController = async (req, res) => {
         }
 
         await challenge.save();
-        return res.status(204).json({ message: `Check-in participants '${challenge.title}' successfully` });
+        return res.status(200).json(`Check-in '${challenge.title}' successfully`);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
