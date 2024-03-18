@@ -237,7 +237,7 @@ const updateChallenge = async (req, res) => {
 
         const updatedChallenge = await ChallengeModel.findOneAndUpdate(
             { _id: id },
-            updatedData,
+            { $set: updatedData },
             { new: true }
         );
 
