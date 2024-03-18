@@ -335,9 +335,11 @@ const joinChallenge = async (req, res) => {
             return res.status(400).json({ message: 'You cannot participate in your challenge' });
         }
 
-        if (challenge.participants.includes(user._id)) {
+        const participantIds = challenge.participants.map(participant => String(participant._id));
+        if (participantIds.includes(String(user._id))) {
             return res.status(400).json({ message: 'User is already a participant in this challenge' });
         }
+        
         challenge.participants.push(user._id);
         await challenge.save();
         return res.status(200).json({ message: 'User successfully joined the challenge' });
