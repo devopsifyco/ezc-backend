@@ -58,13 +58,6 @@ const userSchema = new mongoose.Schema({
         enum: ['active', 'block'],
         default: 'active',
     },
-    challenges: {
-        type: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Challenge'
-        }],
-        default: []
-    },
     avatar: {
         type: {
             name: { type: String, required: true },

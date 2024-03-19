@@ -211,8 +211,35 @@ const createChallenge = async (req, res) => {
 
 const updateChallenge = async (req, res) => {
     try {
-        const { id, title, images_path, description, points_reward, address, company, start_time, end_time } = req.body;
-        console.log(req.body);
+        const { id, title, description, points_reward, address, company, start_time, end_time } = req.body;
+        const imageFiles = req.body.images_path;
+        console.log("imageFiles", imageFiles);
+
+        console.log("title", title);
+
+        const metadata = {
+            contentType: 'image/jpg'
+        }
+
+        const imagesData = [];
+
+        const existingChallenge = await ChallengeModel.findById(id);
+        const existingImages = existingChallenge.images_path || [];
+
+        imagesData.push(...existingImages);
+
+        for (const imageFile of imageFiles) {
+            const storageRefImage = firebaseStorage.ref(storage, `/images/${imageFile.fileName}`);
+            const buffer = new Buffer.from(imageFile.base64, 'base64');
+            const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, buffer, metadata);
+            const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
+
+            imagesData.push({
+                name: imageFile.fileName,
+                downloadLink: downloadURL
+            });
+        }
+
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json("Invalid challenge ID 2");
@@ -220,7 +247,7 @@ const updateChallenge = async (req, res) => {
 
         const updatedData = {
             title,
-            images_path,
+            images_path: imagesData,
             description,
             points_reward,
             address,
@@ -231,13 +258,18 @@ const updateChallenge = async (req, res) => {
 
         const updatedChallenge = await ChallengeModel.findOneAndUpdate(
             { _id: id },
-            updatedData,
+            { $set: updatedData },
             { new: true }
         );
 
         if (!updatedChallenge) {
             return res.status(404).json("Challenge not found");
         }
+
+        console.log("updatedData", updatedData);
+
+        const abc = await ChallengeModel.findById({ _id: id });
+        console.log("images_path", abc.images_path);
         return res.status(200).json("Challenge updated successfully");
     }
     catch (err) {
@@ -351,9 +383,11 @@ const joinChallenge = async (req, res) => {
             return res.status(400).json({ message: 'You cannot participate in your challenge' });
         }
 
-        if (challenge.participants.includes(user._id)) {
+        const participantIds = challenge.participants.map(participant => String(participant._id));
+        if (participantIds.includes(String(user._id))) {
             return res.status(400).json({ message: 'User is already a participant in this challenge' });
         }
+
         challenge.participants.push(user._id);
         await challenge.save();
         return res.status(200).json({ message: 'User successfully joined the challenge' });
@@ -393,7 +427,7 @@ const checkInController = async (req, res) => {
         }
 
         await challenge.save();
-        return res.status(204).json({ message: `Check-in participants '${challenge.title}' successfully` });
+        return res.status(200).json(`Check-in '${challenge.title}' successfully`);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -450,6 +484,48 @@ const confirmFinishChallenge = async (req, res) => {
 
 }
 
+
+const challengeThatUseHasJoined = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const userChallenges = await ChallengeModel.find();
+
+        const challengesUserJoined = userChallenges.filter(challenge => {
+            return challenge.participants.some(participant => participant._id.toString() === user._id.toString());
+        });
+
+        return res.status(200).json({ userChallenges: challengesUserJoined });
+    }
+    catch (err) {
+        console.log("Get challenge", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
+const getMyOwnChallenge = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const userChallenges = await ChallengeModel.find({ owner_id: user._id });
+        return res.status(200).json(userChallenges);
+    }
+    catch (err) {
+        console.log("Get my own challenge error: ", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
 module.exports = {
     getAllChallenge,
     getChallengeByStatus,
@@ -465,5 +541,7 @@ module.exports = {
     getParticipantsOfAChallenge,
     confirmFinishChallenge,
     getOneChallengeByStatusApproved,
+    challengeThatUseHasJoined,
+    getMyOwnChallenge
 };
 

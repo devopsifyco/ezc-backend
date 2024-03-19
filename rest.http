@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:4000/api
+@baseUrl = http://192.168.42.67:4000/api
 # @baseUrl = https://ezc-test-api.greenbee.gke.vn/api
 
 # ---------------- User onboarding API -------------------
@@ -40,7 +40,7 @@ POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-    "email": "thaihoang20112k3@gmail.com",
+    "email": "hoxuanty2003qng@gmail.com",
     "password": "11111111"
 }
 
@@ -50,7 +50,7 @@ POST {{baseUrl}}/refresh-token
 Content-Type: application/json
 
 {
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MDU1OTI5LCJleHAiOjE3MDk2NDc5Mjl9.o8n_4JTyiVtMGOrQcFMaxBCC6WwD0HlJrA-w6qCytOs"
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg0ODc4NTYsImV4cCI6MTcwODQ4Nzg4Nn0.hf0y2e5v3FS0irrNStcsyKREkZtVo-MrWk-3OdOLy4g"
 }
 
 
@@ -69,7 +69,7 @@ Content-Type: application/json
 
 ### get all challenges
 GET {{baseUrl}}/challenges
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoQGdtYWlsLmNvbSIsImlhdCI6MTcwOTE3NTg3OCwiZXhwIjoxNzA5MTg2Njc4fQ.aKd9lq93gJ4zgkjjP6nQzKJJbFh3ZdGJrxB-bJhtS_o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhveHVhbnR5MjAwM3FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MTAzNTkwMzksImV4cCI6MTcxMDk2MzgzOX0.YXmnxrAkwh5MxUC5q268KXR5tqqO9vfukvlRhCkU0kc
 
 ### get a challenges
 GET {{baseUrl}}/challenge?id=65dd37add2d3d7375bf34ca4
@@ -87,13 +87,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 }
 
 ### update challenge
-POST {{baseUrl}}/challenge/update
+POST {{baseUrl}}/info?id=65dd4a30091015f4bcb7f9a6
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA2OTMxMzExLCJleHAiOjE3MDcwMzkzMTF9.d6ZNzQVAwYSBPS6hoetE75TjnDPkSUM6S00gQVfnLVo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhveHVhbnR5MjAwM3FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MDk1MzIyNjUsImV4cCI6MTcxMDEzNzA2NX0.UInFA1V3-JAJK_kbdl6CVliuqvYnx9X6icw-dblaOLc
 
 {
     "id": "65bdad62e331cf8e35af720d",
-    "title": "Lam sach bien My Khe 2",
+    "title": "Hello word",
     "images_path": "firebase.cloud.com",
     "description": "Lam sach bien tu 2km -> 16km",
     "points_reward": 3
@@ -102,7 +102,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 ### approve challenge
 POST {{baseUrl}}/challenge/approve
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA3MjA2NzQ4LCJleHAiOjE3MDczMTQ3NDh9.pB9CIuGsRbWr0P1x1iJnwlJwRP9pE51Erml4kVuhjZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MDkxMDQ1NjksImV4cCI6MTcwOTExNTM2OX0.0CZFCzif_ZJ7thcCt3ImTdUHXws-DG9St6QDa8YSXx8
 
 {
     "id": "65b90924b0df7134dc92a01e"
@@ -120,10 +120,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob
 ### delete challenge
 DELETE {{baseUrl}}/challenge/delete
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWlob2FuZzIwMTEyazNAZ21haWwuY29tIiwiaWF0IjoxNzA4MzEwODQxLCJleHAiOjE3MDgzMTI2NDF9.2cKQ3HhlGAYXMF9psKhlot7__Tl2OtpvuwvyaY9Q8UM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhveHVhbnR5MjAwM3FuZ0BnbWFpbC5jb20iLCJpYXQiOjE3MTAzNTkwMzksImV4cCI6MTcxMDk2MzgzOX0.YXmnxrAkwh5MxUC5q268KXR5tqqO9vfukvlRhCkU0kc
 
 {
-    "id": "65bdad62e331cf8e35af720d"
+    "id": "65f1707ffdb66aebcb06eac8"
 }
 
 
