@@ -15,6 +15,7 @@ const {
     checkInController,
     getParticipantsOfAChallenge,
     confirmFinishChallenge,
+    getOneChallengeByStatusApproved,
     challengeThatUseHasJoined,
     getMyOwnChallenge
 } = require('../controllers/challengeController');
@@ -74,6 +75,10 @@ router
 router
     .route('/challenge/complete')
     .post(checkAuthentication, confirmFinishChallenge)
+
+router
+    .route('/challenge/status/approved/:id')
+    .get(checkAuthentication, getOneChallengeByStatusApproved)
 
 router
     .route('/challenge/my-challenge')

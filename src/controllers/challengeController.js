@@ -139,6 +139,22 @@ const getChallengeByStatus = async (req, res) => {
     }
 }
 
+const getOneChallengeByStatusApproved = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const challenge = await ChallengeModel.findOne({ _id: id, status: 'approved' });
+
+        if (!challenge) {
+            return res.status(404).json({ message: 'Challenge not found' });
+        }
+
+        return res.status(200).json(challenge);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 
 const createChallenge = async (req, res) => {
     try {
@@ -524,6 +540,7 @@ module.exports = {
     checkInController,
     getParticipantsOfAChallenge,
     confirmFinishChallenge,
+    getOneChallengeByStatusApproved,
     challengeThatUseHasJoined,
     getMyOwnChallenge
 };
