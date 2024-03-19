@@ -460,6 +460,24 @@ const challengeThatUseHasJoined = async (req, res) => {
 }
 
 
+const getMyOwnChallenge = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const userChallenges = await ChallengeModel.find({ owner_id: user._id });
+        return res.status(200).json(userChallenges);
+    }
+    catch (err) {
+        console.log("Get my own challenge error: ", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
 module.exports = {
     getAllChallenge,
     getChallengeByStatus,
@@ -474,6 +492,7 @@ module.exports = {
     checkInController,
     getParticipantsOfAChallenge,
     confirmFinishChallenge,
-    challengeThatUseHasJoined
+    challengeThatUseHasJoined,
+    getMyOwnChallenge
 };
 

@@ -15,7 +15,8 @@ const {
     checkInController,
     getParticipantsOfAChallenge,
     confirmFinishChallenge,
-    challengeThatUseHasJoined
+    challengeThatUseHasJoined,
+    getMyOwnChallenge
 } = require('../controllers/challengeController');
 
 const router = express.Router();
@@ -73,6 +74,10 @@ router
 router
     .route('/challenge/complete')
     .post(checkAuthentication, confirmFinishChallenge)
+
+router
+    .route('/challenge/my-challenge')
+    .post(checkAuthentication, getMyOwnChallenge)
 
 
 module.exports = router
