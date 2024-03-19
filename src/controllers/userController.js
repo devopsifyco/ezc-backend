@@ -377,7 +377,8 @@ const leaderboard = async (req, res) => {
 
         const leaderboard = users.map(user => ({
             username: user.username,
-            highest_points: user.highest_points
+            highest_points: user.highest_points,
+            avatar: user.avatar
         }));
         console.log("Get leaderboard successfull");
         return res.status(200).json(leaderboard);

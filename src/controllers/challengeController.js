@@ -357,9 +357,11 @@ const joinChallenge = async (req, res) => {
             return res.status(400).json({ message: 'You cannot participate in your challenge' });
         }
 
-        if (challenge.participants.includes(user._id)) {
+        const participantIds = challenge.participants.map(participant => String(participant._id));
+        if (participantIds.includes(String(user._id))) {
             return res.status(400).json({ message: 'User is already a participant in this challenge' });
         }
+        
         challenge.participants.push(user._id);
         await challenge.save();
         return res.status(200).json({ message: 'User successfully joined the challenge' });
@@ -399,7 +401,7 @@ const checkInController = async (req, res) => {
         }
 
         await challenge.save();
-        return res.status(204).json({ message: `Check-in participants '${challenge.title}' successfully` });
+        return res.status(200).json(`Check-in '${challenge.title}' successfully`);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -456,6 +458,48 @@ const confirmFinishChallenge = async (req, res) => {
 
 }
 
+
+const challengeThatUseHasJoined = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const userChallenges = await ChallengeModel.find();
+
+        const challengesUserJoined = userChallenges.filter(challenge => {
+            return challenge.participants.some(participant => participant._id.toString() === user._id.toString());
+        });
+
+        return res.status(200).json({ userChallenges: challengesUserJoined });
+    }
+    catch (err) {
+        console.log("Get challenge", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
+const getMyOwnChallenge = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const userChallenges = await ChallengeModel.find({ owner_id: user._id });
+        return res.status(200).json(userChallenges);
+    }
+    catch (err) {
+        console.log("Get my own challenge error: ", err);
+        return res.status(500).send("Internal server error");
+    }
+}
+
+
 module.exports = {
     getAllChallenge,
     getChallengeByStatus,
@@ -469,6 +513,8 @@ module.exports = {
     getAllChallengesUserNotJoinYet,
     checkInController,
     getParticipantsOfAChallenge,
-    confirmFinishChallenge
+    confirmFinishChallenge,
+    challengeThatUseHasJoined,
+    getMyOwnChallenge
 };
 

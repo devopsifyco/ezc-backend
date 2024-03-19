@@ -42,23 +42,11 @@ const challengeSchema = new mongoose.Schema({
     },
     start_time: {
         type: Date,
-        required: true,
-        validate: {
-            validator: function(value) {
-                return value > new Date();
-            },
-            message: 'Start time must be in the future'
-        }
+        required: true
     },
     end_time: {
         type: Date,
-        required: true,
-        validate: {
-            validator: function(value) {
-                return value > this.start_time;
-            },
-            message: 'End time must be greater than start time'
-        }
+        required: true
     },
     participants: [{
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
