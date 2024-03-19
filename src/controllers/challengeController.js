@@ -195,8 +195,35 @@ const createChallenge = async (req, res) => {
 
 const updateChallenge = async (req, res) => {
     try {
-        const { id, title, images_path, description, points_reward, address, company, start_time, end_time } = req.body;
-        console.log(req.body);
+        const { id, title, description, points_reward, address, company, start_time, end_time } = req.body;
+        const imageFiles = req.body.images_path;
+        console.log("imageFiles", imageFiles);
+
+        console.log("title", title);
+
+        const metadata = {
+            contentType: 'image/jpg'
+        }
+
+        const imagesData = [];
+
+        const existingChallenge = await ChallengeModel.findById(id);
+        const existingImages = existingChallenge.images_path || [];
+
+        imagesData.push(...existingImages);
+
+        for (const imageFile of imageFiles) {
+            const storageRefImage = firebaseStorage.ref(storage, `/images/${imageFile.fileName}`);
+            const buffer = new Buffer.from(imageFile.base64, 'base64');
+            const snapshotFilename = await firebaseStorage.uploadBytesResumable(storageRefImage, buffer, metadata);
+            const downloadURL = await firebaseStorage.getDownloadURL(snapshotFilename.ref);
+
+            imagesData.push({
+                name: imageFile.fileName,
+                downloadLink: downloadURL
+            });
+        }
+
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json("Invalid challenge ID 2");
@@ -204,7 +231,7 @@ const updateChallenge = async (req, res) => {
 
         const updatedData = {
             title,
-            images_path,
+            images_path: imagesData,
             description,
             points_reward,
             address,
@@ -215,13 +242,18 @@ const updateChallenge = async (req, res) => {
 
         const updatedChallenge = await ChallengeModel.findOneAndUpdate(
             { _id: id },
-            updatedData,
+            { $set: updatedData },
             { new: true }
         );
 
         if (!updatedChallenge) {
             return res.status(404).json("Challenge not found");
         }
+
+        console.log("updatedData", updatedData);
+
+        const abc = await ChallengeModel.findById({ _id: id });
+        console.log("images_path", abc.images_path);
         return res.status(200).json("Challenge updated successfully");
     }
     catch (err) {
@@ -339,7 +371,7 @@ const joinChallenge = async (req, res) => {
         if (participantIds.includes(String(user._id))) {
             return res.status(400).json({ message: 'User is already a participant in this challenge' });
         }
-        
+
         challenge.participants.push(user._id);
         await challenge.save();
         return res.status(200).json({ message: 'User successfully joined the challenge' });
