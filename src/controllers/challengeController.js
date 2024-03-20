@@ -204,7 +204,7 @@ const createChallenge = async (req, res) => {
             end_time: end_time,
         });
         await newChallenge.save();
-        
+
         const notification = new NotificationModel({
             user_id: ownerId,
             message: `New challenge '${title}' has been created successfully.`,
@@ -305,21 +305,24 @@ const approveChallenge = async (req, res) => {
         }
 
         if (challenge.status === 'approved') {
-            return res.status(404).json('This challenge was approved');
+            return res.status(404).json('This challenge was already approved');
         } else if (challenge.status === 'rejected') {
             return res.status(404).json('This challenge was rejected');
         } else {
-            await ChallengeModel.findOneAndUpdate(
-                { _id: id },
-                {
-                    status: "approved"
-                }
-            );
+            await ChallengeModel.findByIdAndUpdate(id, { status: 'approved' });
+            const notification = new NotificationModel({
+                user_id: challenge.owner_id,
+                message: `Congratulations! Your challenge '${challenge.title}' has been approved by admin.`,
+                type: 'challenge',
+                data: {
+                    challenge_id: challenge._id,
+                    challenge_title: challenge.title,
+                },
+            });
+            await notification.save();
+            return res.status(201).json("Approve the challenge successfully");
         }
-
-        return res.status(201).json("Approve the challenge successfully");
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).send("Internal server error");
     }
@@ -339,20 +342,24 @@ const rejectChallenge = async (req, res) => {
         if (challenge.status === 'approved') {
             return res.status(404).json('This challenge was approved');
         } else if (challenge.status === 'rejected') {
-            return res.status(404).json('This challenge was rejected');
+            return res.status(404).json('This challenge was already rejected');
         } else {
-            await ChallengeModel.findOneAndUpdate(
-                { _id: id },
-                {
-                    status: "rejected"
-                }
-            );
-        }
+            await ChallengeModel.findByIdAndUpdate(id, { status: 'rejected' });
+            const notification = new NotificationModel({
+                user_id: challenge.owner_id,
+                message: `Your challenge '${challenge.title}' has been rejected by admin.`,
+                type: 'challenge',
+                data: {
+                    challenge_id: challenge._id,
+                    challenge_title: challenge.title,
+                },
+            });
+            await notification.save();
 
-        return res.status(201).json("Reject the challenge successfully");
-    }
-    catch (err) {
-        console.log(err);
+            return res.status(201).json("Reject the challenge successfully");
+        }
+    } catch (err) {
+        console.log("Reject challenge error: ", err);
         return res.status(500).send("Internal server error");
     }
 }
