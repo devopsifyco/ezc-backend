@@ -2,7 +2,7 @@ const express = require('express');
 
 const {
     getUserNotification
-} = require('../controllers/userController.js');
+} = require('../controllers/notificationController.js');
 
 const { checkAuthentication } = require('../middlewares/authMiddleware.js');
 const router = express.Router();
