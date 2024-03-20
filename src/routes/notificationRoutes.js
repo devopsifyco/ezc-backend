@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 router
-    .get('/notification', checkAuthentication, getUserNotification);
+    .post('/notifications', checkAuthentication, getUserNotification);
 
 
 module.exports = router
