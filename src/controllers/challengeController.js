@@ -1,5 +1,6 @@
 const ChallengeModel = require('../models/Challenge.model');
 const UserModel = require('../models/User.model');
+const NotificationModel = require('../models/Notification.model');
 const firebaseConfig = require('../config/firebase/firebase');
 const firebaseApp = require('firebase/app');
 const firebaseStorage = require('firebase/storage');
@@ -185,6 +186,10 @@ const createChallenge = async (req, res) => {
             });
         }
         const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            console.log(user);
+            return res.status(404).json({ error: 'User not found with the provided email.' });
+        }
         const ownerId = user._id
 
         const newChallenge = new ChallengeModel({
@@ -198,8 +203,18 @@ const createChallenge = async (req, res) => {
             start_time: start_time,
             end_time: end_time,
         });
-
         await newChallenge.save();
+        
+        const notification = new NotificationModel({
+            user_id: ownerId,
+            message: `New challenge "${title}" has been created successfully.`,
+            type: 'challenge',
+            data: {
+                challenge_id: newChallenge._id,
+                challenge_title: title,
+            },
+        });
+        await notification.save();
         return res.status(201).json("Create new challenge successfully");
     }
     catch (err) {
