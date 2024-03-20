@@ -2,6 +2,7 @@ const express = require('express');
 
 const {
     getUserNotification,
+    getAllNotificationOfUser,
     markANotificationAsRead,
     markAllNotificationAsRead,
     getDetailNotification
@@ -14,6 +15,9 @@ const router = express.Router();
 router
     .post('/notifications', checkAuthentication, getUserNotification)
     .get('/notification/:id', checkAuthentication, getDetailNotification);
+
+router
+    .get('/notifications/:email', checkAuthentication, getAllNotificationOfUser);
 
 router
     .post('/notification/read', checkAuthentication, markANotificationAsRead);
