@@ -38,9 +38,46 @@ const getAllNotificationOfUser = async(req, res) => {
         return res.status(500).json("Internal server error");
     }
 }
+const markANotificationAsRead = async (req, res) => {
+    try {
+        const { id } = req.body;
+        if (!id) {
+            return res.status(404).json("Notification not found");
+        }
+
+        const notifications = await NotificationModel.findByIdAndUpdate(id, { read: true });
+        if (!notifications) {
+            return res.status(404).json("Get user nofitication error: User not found");
+        }
+
+        return res.status(201).json("Update notification successfull");
+    } catch (error) {
+        console.error("Error while getting user notifications:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
+const markAllNotificationAsRead = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json("Get user nofitication error: User not found");
+        }
+
+        const userId = user._id;
+        await NotificationModel.updateMany({ user_id: userId }, { read: true })
+        return res.status(201).json("Update all notification successfull");
+    } catch (error) {
+        console.error("Error while getting user notifications:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
 
 
 module.exports = {
     getUserNotification,
-    getAllNotificationOfUser
+    getAllNotificationOfUser,
+    markANotificationAsRead,
+    markAllNotificationAsRead
 };

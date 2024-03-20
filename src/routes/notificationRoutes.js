@@ -2,7 +2,9 @@ const express = require('express');
 
 const {
     getUserNotification,
-    getAllNotificationOfUser
+    getAllNotificationOfUser,
+    markANotificationAsRead,
+    markAllNotificationAsRead
 } = require('../controllers/notificationController.js');
 
 const { checkAuthentication } = require('../middlewares/authMiddleware.js');
@@ -13,7 +15,13 @@ router
     .post('/notifications', checkAuthentication, getUserNotification);
 
 router
-    .get('/notifications/:email', checkAuthentication, getAllNotificationOfUser)
+    .get('/notifications/:email', checkAuthentication, getAllNotificationOfUser);
+
+router
+    .post('/notification/read', checkAuthentication, markANotificationAsRead);
+
+router
+    .post('/notifications/read', checkAuthentication, markAllNotificationAsRead);
 
 
 module.exports = router
