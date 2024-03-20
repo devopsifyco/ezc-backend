@@ -207,7 +207,7 @@ const createChallenge = async (req, res) => {
         
         const notification = new NotificationModel({
             user_id: ownerId,
-            message: `New challenge "${title}" has been created successfully.`,
+            message: `New challenge '${title}' has been created successfully.`,
             type: 'challenge',
             data: {
                 challenge_id: newChallenge._id,
