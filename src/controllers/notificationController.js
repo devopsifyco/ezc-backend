@@ -56,9 +56,32 @@ const markAllNotificationAsRead = async (req, res) => {
     }
 };
 
+const getDetailNotification = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(404).json("Notification not found");
+        }
+
+        const notifications = await NotificationModel.findById(id)
+            .populate({
+                path: 'user_id',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            });
+        if (!notifications) {
+            return res.status(404).json("Get user nofitication error: Notification not found");
+        }
+
+        return res.status(200).json(notifications);
+    } catch (error) {
+        console.error("Error while getting detail notifications:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
 
 module.exports = {
     getUserNotification,
     markANotificationAsRead,
-    markAllNotificationAsRead
+    markAllNotificationAsRead,
+    getDetailNotification
 };
