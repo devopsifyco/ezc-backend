@@ -82,6 +82,24 @@ const userExchangeGiftHistory = async (req, res) => {
     }
 };
 
+const allOfUserExchangeGiftHistory = async (req, res) => {
+    try {
+        const history = await GiftExchangeModel.find()
+            .populate({
+                path: 'user',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .populate({
+                path: 'gift',
+                select: ''
+            })
+        return res.status(200).json(history);
+    } catch (error) {
+        console.error("Error while exchanging gift:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
 const viewGiftDetail = async (req, res) => {
     try {
         const { id } = req.params;
@@ -101,5 +119,6 @@ module.exports = {
     getAllGifts,
     userExchangeGift,
     userExchangeGiftHistory,
+    allOfUserExchangeGiftHistory,
     viewGiftDetail
 };

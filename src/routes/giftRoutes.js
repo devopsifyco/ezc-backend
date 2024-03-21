@@ -4,6 +4,7 @@ const {
     getAllGifts,
     userExchangeGift,
     userExchangeGiftHistory,
+    allOfUserExchangeGiftHistory,
     viewGiftDetail
 } = require('../controllers/giftController.js');
 
@@ -15,6 +16,7 @@ router
     .get('/gifts', checkAuthentication, getAllGifts)
     .post('/gift/exchange', checkAuthentication, userExchangeGift)
     .get('/gift/:id', checkAuthentication, viewGiftDetail)
-    .get('/gift/history/:email', checkAuthentication, userExchangeGiftHistory);
+    .get('/gift/history/all', checkAuthentication, allOfUserExchangeGiftHistory)
+    .get('/gift/history/:email', checkAuthentication, userExchangeGiftHistory)
 
 module.exports = router
