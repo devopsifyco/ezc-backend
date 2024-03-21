@@ -82,8 +82,24 @@ const userExchangeGiftHistory = async (req, res) => {
     }
 };
 
+const viewGiftDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const gift = await GiftModel.findById(id)
+        if (!gift) {
+            return res.status(404).json("Gift not found");
+        }
+
+        return res.status(200).json(gift);
+    } catch (error) {
+        console.error("Error while view detail gift:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
 module.exports = {
     getAllGifts,
     userExchangeGift,
-    userExchangeGiftHistory
+    userExchangeGiftHistory,
+    viewGiftDetail
 };
