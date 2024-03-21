@@ -1,6 +1,7 @@
 const GiftModel = require('../models/Gift.model');
 const UserModel = require('../models/User.model');
 const GiftExchangeModel = require('../models/GiftExchange.model');
+const NotificationModel = require('../models/Notification.model');
 
 const getAllGifts = async (req, res) => {
     try {
@@ -42,7 +43,39 @@ const userExchangeGift = async (req, res) => {
         await giftExchange.save();
         await gift.save();
         await user.save();
+
+        const notification = new NotificationModel({
+            user_id: user._id,
+            message: `You have successfully exchanged a gift: ${gift.name}`,
+            type: 'gift_exchange'
+        });
+        await notification.save();
+
         return res.status(200).json("Gift exchanged successfully");
+    } catch (error) {
+        console.error("Error while exchanging gift:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
+const userExchangeGiftHistory = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const user = await UserModel.findOne({ email: email })
+        if (!user) {
+            return res.status(404).json("User not found");
+        }
+
+        const history = await GiftExchangeModel.find({ user: user._id })
+            .populate({
+                path: 'user',
+                select: '-password -points -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+            .populate({
+                path: 'gift',
+                select: ''
+            })
+        return res.status(200).json(history);
     } catch (error) {
         console.error("Error while exchanging gift:", error);
         return res.status(500).json("Internal server error");
@@ -51,5 +84,6 @@ const userExchangeGift = async (req, res) => {
 
 module.exports = {
     getAllGifts,
-    userExchangeGift
+    userExchangeGift,
+    userExchangeGiftHistory
 };
