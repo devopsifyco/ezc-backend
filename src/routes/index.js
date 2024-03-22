@@ -3,6 +3,7 @@ const challengeRoutes = require('./challengeRoutes')
 const sendMailRoutes = require('./sendMailRoutes')
 const notificationRoutes = require('./notificationRoutes')
 const giftRoutes = require('./giftRoutes')
+const donateRoutes = require('./donateRoutes')
 const healthcheckRoutes = require('./healthcheckRoutes')
 bodyParser = require('body-parser').urlencoded({ extended: true }); 
 
@@ -12,6 +13,7 @@ function route(app) {
     app.use('/api', bodyParser, challengeRoutes);
     app.use('/api', bodyParser, sendMailRoutes);
     app.use('/api', bodyParser, notificationRoutes);
+    app.use('/api', bodyParser, donateRoutes);
     app.use('/api', bodyParser, giftRoutes);
 }
 
