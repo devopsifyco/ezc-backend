@@ -471,6 +471,9 @@ const confirmFinishChallenge = async (req, res) => {
         if (String(challenge.owner_id) != String(user._id)) {
             return res.status(400).json({ message: 'You are not the owner of this challenge' });
         }
+        if (challenge.status === "finished") {
+            return res.status(400).json({ message: 'The challenge is already finished' });
+        }
 
         const currentTime = new Date();
         if (currentTime < challenge.start_time) {
@@ -494,9 +497,31 @@ const confirmFinishChallenge = async (req, res) => {
                     user.points += challenge.points_reward;
                     user.highest_points += challenge.points_reward;
                     await user.save();
+
+                    const notification_participant = new NotificationModel({
+                        user_id: participant._id,
+                        message: `Congratulations! You have completed the challenge "${challenge.title}" and earned ${challenge.points_reward} points. Thank you for your contribution to the environment ❤️`,
+                        type: 'challenge_completed'
+                    });
+                    await notification_participant.save();
                 }
+            } else {
+                const notification_participant_not_check_in = new NotificationModel({
+                    user_id: participant._id,
+                    message: `We apologize, but you did not check in to participate in the challenge "${challenge.title}". Therefore, you are not eligible to receive any rewards 😭`,
+                    type: 'challenge_completed'
+                });
+                await notification_participant_not_check_in.save();
             }
         }
+
+        const notification = new NotificationModel({
+            user_id: challenge.owner_id,
+            message: `Congratulations! Your challenge "${challenge.title}" has been completed. Thank you for your contribution to the environment ❤️`,
+            type: 'challenge_completed'
+        });
+        await notification.save();
+
         return res.status(200).json({ message: 'Completed the challenge successfully' });
     }
     catch (err) {
