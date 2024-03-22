@@ -57,7 +57,22 @@ const getUserDonationHistory = async (req, res) => {
     }
 };
 
+const getUserDonationHistoryForAdmin = async (req, res) => {
+    try {
+        const history = await DonationModel.find()
+            .populate({
+                path: 'user',
+                select: '-password -role -verified -is_active -challenges -__v -verification_code -verification_code_expire -refresh_token'
+            })
+        return res.status(200).json(history);
+    } catch (error) {
+        console.error("Error while user donation history: for admin", error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
 module.exports = {
     donateToAppByPoints,
-    getUserDonationHistory
+    getUserDonationHistory,
+    getUserDonationHistoryForAdmin
 };
