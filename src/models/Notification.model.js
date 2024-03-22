@@ -12,7 +12,7 @@ const NotificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['challenge', 'gift_exchange', 'message', 'donation', 'other'],
+        enum: ['challenge', 'gift_exchange', 'message', 'challenge_completed', 'donation', 'other'],
         required: true,
     },
     data: {
