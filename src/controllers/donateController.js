@@ -39,6 +39,25 @@ const donateToAppByPoints = async (req, res) => {
     }
 };
 
+const getUserDonationHistory = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const user = await UserModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json("User not found");
+        }
+        const userId = user._id;
+
+        const history = await DonationModel.find({ user: userId })
+
+        return res.status(200).json(history);
+    } catch (error) {
+        console.error("Error while user donation history:", error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
 module.exports = {
     donateToAppByPoints,
+    getUserDonationHistory
 };
