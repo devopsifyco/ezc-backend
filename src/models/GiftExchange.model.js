@@ -11,6 +11,18 @@ const giftExchangeSchema = new mongoose.Schema({
         ref: 'Gift',
         required: true
     },
+    fullname: {
+        type: String,
+        require: true
+    },
+    phone: {
+        type: String,
+        require: true
+    },
+    address: {
+        type: String,
+        require: true
+    },
     redeemed_at: {
         type: Date,
         default: Date.now
