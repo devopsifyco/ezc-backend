@@ -18,7 +18,7 @@ const getAllGifts = async (req, res) => {
 
 const userExchangeGift = async (req, res) => {
     try {
-        const { email, gift_id } = req.body;
+        const { fullname, phone, address, email, gift_id } = req.body;
         const user = await UserModel.findOne({ email: email });
         if (!user) {
             return res.status(404).json("User not found");
@@ -36,7 +36,10 @@ const userExchangeGift = async (req, res) => {
         }
         const giftExchange = new GiftExchangeModel({
             user: user._id,
-            gift: gift_id
+            gift: gift_id,
+            phone: phone,
+            fullname: fullname,
+            address: address
         });
         user.points -= gift.points_required;
         gift.quantity--;
