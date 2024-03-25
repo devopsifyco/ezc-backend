@@ -47,7 +47,7 @@ const sendVerificationCodeEmail = async (req, res) => {
 
         const verificationToken = generateVerificationToken();
         const now = new Date();
-        const verificationTokenExpire = new Date(now.getTime() + 4 * 60000);
+        const verificationTokenExpire = new Date(now.getTime() + 1 * 60000);
 
         const updatedUser = await UserModel.findOneAndUpdate(
             { _id: user._id },
