@@ -276,15 +276,22 @@ const updateChallenge = async (req, res) => {
             { $set: updatedData },
             { new: true }
         );
-
         if (!updatedChallenge) {
             return res.status(404).json("Challenge not found");
         }
-
         console.log("updatedData", updatedData);
 
-        const abc = await ChallengeModel.findById({ _id: id });
-        console.log("images_path", abc.images_path);
+        const challenge = await ChallengeModel.findById(id);
+        const notification = new NotificationModel({
+            user_id: challenge.owner_id,
+            message: `Update challenge '${challenge.title}' successful.`,
+            type: 'challenge',
+            data: {
+                challenge_id: id,
+                challenge_title: challenge.title,
+            },
+        });
+        await notification.save();
         return res.status(200).json("Challenge updated successfully");
     }
     catch (err) {
