@@ -384,6 +384,17 @@ const deleteChallenge = async (req, res) => {
 
         await ChallengeModel.deleteOne({ _id: id });
 
+        const notification = new NotificationModel({
+            user_id: id,
+            message: `Your challenge '${challenge.title}' has been deleted.`,
+            type: 'challenge',
+            data: {
+                challenge_id: challenge._id,
+                challenge_title: challenge.title,
+            },
+        });
+        await notification.save();
+
         return res.status(201).json("Delete the challenge successfully");
     }
     catch (err) {
