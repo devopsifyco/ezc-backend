@@ -430,9 +430,17 @@ const joinChallenge = async (req, res) => {
 
         challenge.participants.push(user._id);
         await challenge.save();
+        const notification = new NotificationModel({
+            user_id: user._id,
+            message: `You have joined the challenge '${challenge.title}'.`,
+            type: 'challenge',
+            data: {
+                challenge_id: challenge._id,
+                challenge_title: challenge.title,
+            },
+        });
+        await notification.save();
         return res.status(200).json({ message: 'User successfully joined the challenge' });
-
-
     }
     catch (err) {
         console.log(err);
